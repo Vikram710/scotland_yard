@@ -3,10 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {ToastProvider} from 'react-toast-notifications';
 import {Navbar} from './components/Navbar';
-import {Sample} from './pages/Sample';
+import {Home} from './pages/Home';
 import {NotFound} from './pages/NotFound';
 
-function App() {
+export const App = () => {
 	const [size, setSize] = useState(0);
 	useEffect(() => {
 		setSize(window.innerWidth);
@@ -26,7 +26,7 @@ function App() {
 				<Router>
 					<Navbar>
 						<Switch>
-							<Route exact path="/" component={Sample} />
+							<Route exact path="/" component={Home} />
 							<Route path="*" component={NotFound} />
 						</Switch>
 					</Navbar>
@@ -34,6 +34,4 @@ function App() {
 			</ToastProvider>
 		);
 	}
-}
-
-export default App;
+};
