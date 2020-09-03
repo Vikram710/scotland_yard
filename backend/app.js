@@ -12,13 +12,16 @@ const host = (config.ip && config.boolIp) || 'localhost';
 
 // Import routes
 const sampleRouter = require('./routes/sample');
+const roomRouter = require('./routes/room');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Data base connection
+const db = require('./config/keys').mongoURI;
+
 mongoose
-	.connect(`mongodb://${config.server}/${config.db_name}`, {useNewUrlParser: true, useUnifiedTopology: true})
+	.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
 	.then(() => {
 		console.log('Database connection successful');
 	})
@@ -53,6 +56,7 @@ io.on('connection', (socket) => {
 
 // Routes
 app.use('/', sampleRouter);
+app.use('/',roomRouter);
 
 //Listen
 server.listen(port, host, () => {
