@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
-const {createRoom,joinRoom} = require('../controllers/roomController');
+const {createRoom, joinRoom} = require('../controllers/roomController');
 
-router.post('/create', createRoom);
-router.post('/join/:code',joinRoom);
+router.post('/room/create', createRoom);
+router.post('/room/join/:roomCode', joinRoom);
 
 module.exports = router;

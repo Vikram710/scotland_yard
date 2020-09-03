@@ -7,7 +7,7 @@ db_server="127.0.0.1:27017"
 
 myclient = pymongo.MongoClient("mongodb://"+db_server+"/")
 db = myclient[db_name]
-modeDb = db['transportModes']
+modeDb = db['transports']
 modeData = list(modeDb.find({}))
 
 modes = ['Taxi', 'Underground', 'Bus', 'Boat']

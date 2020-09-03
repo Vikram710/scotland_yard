@@ -1,31 +1,28 @@
 const mongoose = require('mongoose');
-var Schema = mongoose.Schema,
-ObjectId = Schema.Types.ObjectId;
+const Schema = mongoose.Schema,
+	ObjectId = Schema.Types.ObjectId,
+	Mixed = Schema.Types.Mixed;
 
 const playerSchema = new Schema({
-    name: {
-        type: String,
-    },
-    character: { 
-        type: String,
-    },
-    ticket: {
-        type: Array,
-        default: []
-    },
-    position: {
-        type: ObjectId,
-    },
-    online: {
-        type: Boolean,
-        default: false
-    },
-    last_login: {
-        type: Date,
-        default: Date.now()
-    },
-    room_id: {
-        type: ObjectId,
-    }
+	user: {
+		type: ObjectId,
+	},
+	character: {
+		type: ObjectId,
+	},
+	roomId: {
+		type: ObjectId,
+	},
+	ticket: {
+		type: Mixed,
+		default: [],
+	},
+	position: {
+		type: Number,
+	},
+	online: {
+		type: Boolean,
+		default: false,
+	},
 });
 module.exports = playerSchema;

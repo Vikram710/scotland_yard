@@ -1,107 +1,73 @@
-const express = require('express');
 const mongoose = require('mongoose');
-
-const Models = require('../models/Model')
+const ObjectId = mongoose.Types.ObjectId;
+const Models = require('../models/Model');
 
 const Room = Models.Room;
 const Player = Models.Player;
-const Ticket = Models.Ticket;
 const Game = Models.Game;
-const Move = Models.Move;
-const Position = Models.Position;
 
-function asyncCodeLoop (callback) {
-    room_code = String(Math.round(Math.random()*1000000));
-    room_code = room_code.substring(0,3) + " " + room_code.substring(3,6);
-    var query = Room.findOne({'room_code': room_code });
-    console.log("calculated random : ",room_code);
-    query.exec(function(err,room){
-        if(err) {
-            callback("-1");
-        }
-        if(room!=undefined) {
-            asyncCodeLoop(callback);
-        }
-        else{
-        callback(room_code);
-        }
-    });
-}
-const createRoom = (req, res) => {
-    console.log("create room post api");
-
-    asyncCodeLoop(function(room_code){
-        console.log("room_code",room_code);
-
-        if(room_code=="-1")
-        return res.status(500).json({success:false,error:err});
-
-        const player = new Player({
-            name : req.body.name,
-        });
-        player.save()
-            .then(player_save =>  {
-                const room = new Room({
-                    room_code: room_code,
-                    active: true,
-                    owner: player_save._id
-                });
-                room.save()
-                    .then(room_save => {
-                        Player.updateOne({'_id': player_save._id},{'room_id': room_save._id})
-                        .then(player1 => {
-                            const game = new Game({
-                                room_id: room_save._id
-                            });
-                            game.save()
-                                .then(game_save => res.status(200).json({success:true,room_id: room_save._id,creator_id: player_save._id,room_code:room_code}))
-                                .catch(err =>{
-                                    return res.status(500).json({success:false,error:err});
-                                });
-                        })
-                        .catch(err =>{
-                            return res.status(500).json({success:false,error:err});
-                        });
-                    })
-                    .catch(err => {
-                        return res.status(500).json({success:false,error:err});
-                    });
-            })
-            .catch(err => {
-                console.log("Error: ",err);
-                return res.status(500).json({success:false,error:err});
-            });
-    });
-   
-    
-};
-const joinRoom = (req, res) => {
-    console.log("join room post api");
-    Room.findOne({'room_code': req.params.code})
-        .then(room => {
-            if(room==undefined)
-            return res.status(200).json({success:false,error: "Room code not found"});
-            
-            const player = new Player({
-                name : req.body.name,
-                room_id: room.room_id
-            });
-
-            player.save()
-                .then(player => {
-                    return res.status(200).json({success: true,room_id: room.room_id,player_id: player._id});
-                })
-                .catch(err => {
-                    console.log("Error: ",err);
-                    return res.status(500).json({success:false,error:err});
-                });
-        })
-        .catch(err =>{
-            return res.status(500).json({success:false,error: err});
-        });
+const createRoomCode = async () => {
+	let roomCode = String(Math.round(Math.random() * Math.pow(10, 9)));
+	roomCode = roomCode.substring(0, 3) + '-' + roomCode.substring(3, 6) + '-' + roomCode.substring(6, 9);
+	try {
+		let query = await Room.findOne({roomCode: roomCode});
+		if (!query) {
+			console.log('Room Code : ', roomCode);
+		} else {
+			createRoom();
+		}
+	} catch (error) {
+		roomCode = -1;
+	}
+	return roomCode;
 };
 
-module.exports = {
-    createRoom,
-    joinRoom
+exports.createRoom = async (req, res) => {
+	try {
+		let roomCode = await createRoomCode();
+		if (roomCode === -1) return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		else {
+			let newRoom = {
+				roomCode: roomCode,
+				owner: ObjectId(req.body.userId),
+				players: [ObjectId(req.body.userId)],
+				active: true,
+			};
+			let room = await Room.create(newRoom);
+
+			let newGame = {
+				roomId: room._id,
+			};
+			await Game.create(newGame);
+
+			let response = {
+				roomCode: roomCode,
+				owner: req.body.userId,
+			};
+			return res.status(200).json({status_code: 200, message: 'Created Room', ...response});
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+	}
+};
+
+exports.joinRoom = async (req, res) => {
+	let room = await Room.findOne({roomCode: req.params.roomCode});
+	try {
+		if (room) {
+			if (room.players.length < 6 && !room.players.includes(ObjectId(req.body.userId))) {
+				room.players = [...room.players, ObjectId(req.body.userId)];
+				await room.save();
+				return res.status(200).json({success: false, error: 'Room joined'});
+			} else {
+				return res.status(400).json({success: false, error: 'Cannot join room'});
+			}
+		} else {
+			return res.status(400).json({success: false, error: 'Room not found'});
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+	}
 };

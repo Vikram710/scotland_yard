@@ -11,17 +11,14 @@ const port = config.port || 3000;
 const host = (config.ip && config.boolIp) || 'localhost';
 
 // Import routes
-const sampleRouter = require('./routes/sample');
+const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// Data base connection
-const db = require('./config/keys').mongoURI;
-
 mongoose
-	.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
+	.connect(config.dbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 	.then(() => {
 		console.log('Database connection successful');
 	})
@@ -54,9 +51,18 @@ io.on('connection', (socket) => {
 	});
 });
 
+// Initailize locals
+const initialiseUserLocal = (req, res, next) => {
+	req.locals = {};
+	req.locals.initialized = true;
+	next();
+};
+
+app.use(initialiseUserLocal);
+
 // Routes
-app.use('/', sampleRouter);
-app.use('/',roomRouter);
+app.use(roomRouter);
+app.use(userRouter);
 
 //Listen
 server.listen(port, host, () => {

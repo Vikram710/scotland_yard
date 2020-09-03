@@ -7,6 +7,7 @@ module.exports = {
 	ip: ip_address,
 	boolIp: false,
 	port: 3000,
-	backendUrl: 'http://localhost:3000',
+	backendUrl: 'http://localhost:3000', //REPLACE WITH YOUR BACKEND URL
 	frontendUrl: 'http://localhost:3100', //REPLACE WITH YOUR FRONTEND URL
+	dbUrl: `mongodb://${server}/${db_name}`, //REPLACE WITH YOUR DB URL
 };

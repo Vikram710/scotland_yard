@@ -5,7 +5,7 @@ import {ToastProvider} from 'react-toast-notifications';
 import {Navbar} from './components/Navbar';
 import {Home} from './pages/Home';
 import {NotFound} from './pages/NotFound';
-import Game from './pages/Game/Game';
+import {Game} from './pages/Game';
 
 export const App = () => {
 	const [size, setSize] = useState(0);
@@ -30,7 +30,6 @@ export const App = () => {
 							<Route exact path="/" component={Home} />
 							<Route path="/game" component={Game} />
 							<Route path="*" component={NotFound} />
-							
 						</Switch>
 					</Navbar>
 				</Router>
