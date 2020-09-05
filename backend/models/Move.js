@@ -1,31 +1,35 @@
 const mongoose = require('mongoose');
-var Schema = mongoose.Schema,
-ObjectId = Schema.ObjectId;
+const Schema = mongoose.Schema,
+	ObjectId = Schema.Types.ObjectId;
 
 const moveSchema = new Schema({
-    made_by: {
-        type: ObjectId
-      },
-    from_position: {
-        type: ObjectId
-      },
-    current_position: {
-        type: ObjectId
-      },
-    used_transport: {
-        type: Number
-      },
-    turn_number: {
-        type: Number,
-        default: 0
-      },
-    first_move: {
-        type: Boolean,
-        default: false,
-    },
-    time: {
-        type: Date,
-        default: Date.now()
-    }
+	madeBy: {
+		type: ObjectId,
+	},
+	fromPosition: {
+		type: Number,
+	},
+	currentPosition: {
+		type: Number,
+	},
+	usedTransport: {
+		type: ObjectId,
+	},
+	roundNumber: {
+		type: Number,
+		default: 0,
+	},
+	turnNumber: {
+		type: Number,
+		default: 1,
+	},
+	firstMove: {
+		type: Boolean,
+		default: false,
+	},
+	time: {
+		type: Date,
+		default: Date.now(),
+	},
 });
 module.exports = moveSchema;

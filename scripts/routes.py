@@ -24,9 +24,9 @@ with open(file_path) as fp:
 
 myclient = pymongo.MongoClient("mongodb://"+db_server+"/")
 db=myclient[db_name]
-routeDb = db['mapRoutes']
+routeDb = db['routes']
 routeData = list(routeDb.find({}))
-modeDb = db['transportModes']
+modeDb = db['transports']
 modeData = list(modeDb.find({}))
 
 if len(routeData) == 0:

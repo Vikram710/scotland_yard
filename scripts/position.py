@@ -23,7 +23,7 @@ with open(file_path) as fp:
 
 myclient = pymongo.MongoClient("mongodb://"+db_server+"/")
 db = myclient[db_name]
-posDb = db['pointPositions']
+posDb = db['positions']
 posData = list(posDb.find({}))
 
 if len(posData) == 0:
