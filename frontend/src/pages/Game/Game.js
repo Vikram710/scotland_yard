@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button} from 'react-bootstrap';
 import mapimage from '../../assets/scotlandYard/map-min.png';
 import Panzoom from '@panzoom/panzoom';
+import {Sidebar} from '../../components/Sidebar';
 
 export const Game = (props) => {
 	let [panzoom, setPanzoom] = useState(null);
@@ -67,6 +68,7 @@ export const Game = (props) => {
 
 	return (
 		<>
+			<Sidebar />
 			<Button variant="primary">open sidebar</Button>
 			<div style={{width: '100%', height: '100%'}}>
 				<canvas
