@@ -23,12 +23,12 @@ export const App = () => {
 		return <div>You cannot play this game on phone</div>;
 	} else {
 		return (
-			<ToastProvider>
+			<ToastProvider autoDismiss={true}>
 				<Router>
 					<Navbar>
 						<Switch>
 							<Route exact path="/" component={Home} />
-							<Route path="/game" component={Game} />
+							<Route path="/game/:room" component={Game} />
 							<Route path="*" component={NotFound} />
 						</Switch>
 					</Navbar>

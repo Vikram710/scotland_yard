@@ -30,7 +30,6 @@ exports.createRoom = async (req, res) => {
 			let newRoom = {
 				roomCode: roomCode,
 				owner: ObjectId(req.body.userId),
-				players: [ObjectId(req.body.userId)],
 				active: true,
 			};
 			let room = await Room.create(newRoom);
@@ -57,9 +56,10 @@ exports.joinRoom = async (req, res) => {
 	try {
 		if (room) {
 			if (room.players.length < 6 && !room.players.includes(ObjectId(req.body.userId))) {
+				//testing purpose condition should be <6 && !includes
 				room.players = [...room.players, ObjectId(req.body.userId)];
 				await room.save();
-				return res.status(200).json({success: false, error: 'Room joined'});
+				return res.status(200).json({status_code: 200, success: false, message: 'Room joined'});
 			} else {
 				return res.status(400).json({success: false, error: 'Cannot join room'});
 			}

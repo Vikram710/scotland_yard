@@ -13,6 +13,7 @@ const host = (config.ip && config.boolIp) || 'localhost';
 // Import routes
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
+const {User} = require('./models/Model.js');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -39,15 +40,40 @@ app.use(function (req, res, next) {
 const server = http.createServer(app);
 const io = socketio(server);
 
-io.on('connection', (socket) => {
-	console.log('new conn');
+io.set('origins', '*:*');
 
-	socket.on('join', ({name, pwd}) => {
-		console.log(name, pwd);
-	});
+io.use(async (socket, next) => {
+	var handshakeData = socket.request;
+	const roomCode = handshakeData._query['room'];
+	const userId = handshakeData._query['userId'];
+	socket.roomCode = roomCode;
+	socket.userId = userId;
+
+	console.log('userId ' + userId + ' ' + roomCode);
+
+	if (userId) {
+		const user = await User.findById(userId);
+		socket.username = user.name;
+	}
+
+	next();
+});
+
+io.on('connection', (socket) => {
+	const roomCode = socket.roomCode;
+	const userId = socket.userId;
+	const username = socket.username;
+
+	socket.join(roomCode);
+	console.log('new conn');
 
 	socket.on('disconnect', () => {
 		console.log('dis conn');
+	});
+
+	io.to(roomCode).emit('test', `datasending ${roomCode}`);
+	io.to(roomCode).emit('playerJoin', {
+		playerName: username,
 	});
 });
 
