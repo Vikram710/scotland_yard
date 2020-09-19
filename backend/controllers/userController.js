@@ -29,7 +29,6 @@ exports.createUser = async (req, res) => {
 			return res.status(400).json({status_code: 400, message: err});
 		}
 	} catch (error) {
-		console.log(error);
 		return res.status(500).json({status_code: 500, message: 'Internal server error'});
 	}
 };

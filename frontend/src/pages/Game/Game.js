@@ -1,12 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Button} from 'react-bootstrap';
 import mapimage from '../../assets/scotlandYard/map-min.png';
 import Panzoom from '@panzoom/panzoom';
 import {Sidebar} from '../../components/Sidebar';
+import io from 'socket.io-client';
+import {API_URL} from '../../config';
+import {useToasts} from 'react-toast-notifications';
 
 export const Game = (props) => {
 	let [panzoom, setPanzoom] = useState(null);
 	let [stateImg, setStateImg] = useState({});
+	const {addToast} = useToasts();
+	const userId = localStorage.getItem('user_id');
 
 	const showpos = (e) => {
 		const ele = document.getElementById('map');
@@ -64,12 +68,26 @@ export const Game = (props) => {
 		panzoomTemp.pan(10, 10);
 		setPanzoom(panzoomTemp);
 		elem.parentElement.addEventListener('wheel', panzoomTemp.zoomWithWheel);
+
+		const {match} = props;
+		const roomCode = match.params.room;
+
+		console.log('user ', userId);
+		const socket = io(API_URL, {query: `room=${roomCode}&userId=${userId}`});
+
+		socket.on('test', (data) => {
+			console.log(data);
+		});
+		socket.on('playerJoin', (data) => {
+			const playerName = data.playerName;
+			addToast(`${playerName} just joined`, {appearance: 'success'});
+		});
+		return () => socket.disconnect();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<>
 			<Sidebar />
-			<Button variant="primary">open sidebar</Button>
 			<div style={{width: '100%', height: '100%'}}>
 				<canvas
 					draggable="true"
