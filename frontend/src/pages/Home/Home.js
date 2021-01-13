@@ -13,17 +13,16 @@ const styles = {
 let socket;
 
 export const Home = ({location}) => {
-	let end = API_URL;
-
 	useEffect(() => {
-		socket = io(end);
+		socket = io(API_URL);
 		socket.emit('join', {name: 'HEY', pwd: 'ASF'});
 
 		return () => {
 			socket.emit('disconnect');
 			socket.off();
 		};
-	}, [end, location.search]);
+	}, [location.search]);
+
 	return (
 		<div style={styles.root}>
 			<Tabs defaultActiveKey="createRoom" id="uncontrolled-tab" style={styles.tabs}>

@@ -3,16 +3,19 @@ const Schema = mongoose.Schema,
 	ObjectId = Schema.Types.ObjectId;
 
 const moveSchema = new Schema({
+	gameId: {
+		type: ObjectId,
+	},
 	madeBy: {
 		type: ObjectId,
 	},
 	fromPosition: {
 		type: Number,
 	},
-	currentPosition: {
+	toPosition: {
 		type: Number,
 	},
-	usedTransport: {
+	ticketUsed: {
 		type: ObjectId,
 	},
 	roundNumber: {

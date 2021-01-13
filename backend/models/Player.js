@@ -13,11 +13,14 @@ const playerSchema = new Schema({
 	roomId: {
 		type: ObjectId,
 	},
-	ticket: {
+	tickets: {
 		type: Mixed,
-		default: [],
+		default: {},
 	},
 	position: {
+		type: Number,
+	},
+	turn: {
 		type: Number,
 	},
 	online: {

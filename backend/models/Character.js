@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const characterSchema = new Schema({
-	name: {
+	role: {
 		type: String,
 	},
-	turn: {
-		type: Number,
+	name: {
+		type: String,
 	},
 });
 module.exports = characterSchema;

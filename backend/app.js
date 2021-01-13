@@ -13,6 +13,7 @@ const host = (config.ip && config.boolIp) || 'localhost';
 // Import routes
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
+const preGameRouter = require('./routes/preGame');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -63,6 +64,7 @@ app.use(initialiseUserLocal);
 // Routes
 app.use(roomRouter);
 app.use(userRouter);
+app.use(preGameRouter);
 
 //Listen
 server.listen(port, host, () => {

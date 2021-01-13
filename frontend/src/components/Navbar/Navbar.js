@@ -19,8 +19,11 @@ export const Navbar = (props) => {
 				<NavbarBootstrap.Collapse id="responsive-navbar-nav">
 					<Nav className="mr-auto"></Nav>
 					<Nav>
+						<Nav.Link href="/game">Game</Nav.Link>
 						<Nav.Link onClick={() => setRuleModal(true)}>Rules</Nav.Link>
-						<Nav.Link onClick={() => setChangeNameModal(true)}>Name</Nav.Link>
+						<Nav.Link onClick={() => setChangeNameModal(true)}>
+							{localStorage.getItem('user_id') ? localStorage.getItem('name') : 'Name'}
+						</Nav.Link>
 					</Nav>
 				</NavbarBootstrap.Collapse>
 			</NavbarBootstrap>
@@ -29,7 +32,11 @@ export const Navbar = (props) => {
 				<div>{props.children}</div>
 			</div>
 			<Rules show={ruleModal} onHide={() => setRuleModal(false)} />
-			<ChangeName show={changeNameModal} onHide={() => setChangeNameModal(false)} />
+			<ChangeName
+				show={changeNameModal}
+				setChangeNameModal={setChangeNameModal}
+				onHide={() => setChangeNameModal(false)}
+			/>
 		</div>
 	);
 };

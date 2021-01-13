@@ -22,30 +22,35 @@ const createRoomCode = async () => {
 	return roomCode;
 };
 
+exports.getRoomCode = async (req, res) => {
+	let roomCode = await createRoomCode();
+	if (roomCode === -1) return res.status(500).json({status_code: 500, message: 'Internal server error'});
+
+	return res.status(200).json({status_code: 200, roomCode});
+};
+
 exports.createRoom = async (req, res) => {
 	try {
-		let roomCode = await createRoomCode();
-		if (roomCode === -1) return res.status(500).json({status_code: 500, message: 'Internal server error'});
-		else {
-			let newRoom = {
-				roomCode: roomCode,
-				owner: ObjectId(req.body.userId),
-				players: [ObjectId(req.body.userId)],
-				active: true,
-			};
-			let room = await Room.create(newRoom);
+		let newRoom = {
+			roomCode: req.body.roomCode,
+			password: req.body.password,
+			owner: ObjectId(req.body.userId),
+			players: [ObjectId(req.body.userId)],
+			active: true,
+		};
+		let room = await Room.create(newRoom);
 
-			let newGame = {
-				roomId: room._id,
-			};
-			await Game.create(newGame);
+		let newGame = {
+			roomId: room._id,
+		};
+		let game = await Game.create(newGame);
 
-			let response = {
-				roomCode: roomCode,
-				owner: req.body.userId,
-			};
-			return res.status(200).json({status_code: 200, message: 'Created Room', ...response});
-		}
+		let response = {
+			roomId: room._id,
+			owner: req.body.userId,
+			game: game._id,
+		};
+		return res.status(200).json({status_code: 200, message: 'Created Room', ...response});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({status_code: 500, message: 'Internal server error'});
@@ -53,10 +58,14 @@ exports.createRoom = async (req, res) => {
 };
 
 exports.joinRoom = async (req, res) => {
-	let room = await Room.findOne({roomCode: req.params.roomCode});
+	let room = await Room.findOne({roomCode: req.body.roomCode});
 	try {
 		if (room) {
-			if (room.players.length < 6 && !room.players.includes(ObjectId(req.body.userId))) {
+			if (
+				room.players.length < 6 &&
+				!room.players.includes(ObjectId(req.body.userId)) &&
+				room.password === req.body.password
+			) {
 				room.players = [...room.players, ObjectId(req.body.userId)];
 				await room.save();
 				return res.status(200).json({success: false, error: 'Room joined'});

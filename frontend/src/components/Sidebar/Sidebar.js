@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -68,7 +68,7 @@ export const Sidebar = () => {
 	return (
 		<div>
 			{['left', 'right', 'top', 'bottom'].map((anchor) => (
-				<React.Fragment key={anchor}>
+				<Fragment key={anchor}>
 					<Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
 					<SwipeableDrawer
 						anchor={anchor}
@@ -77,7 +77,7 @@ export const Sidebar = () => {
 						onOpen={toggleDrawer(anchor, true)}>
 						{list(anchor)}
 					</SwipeableDrawer>
-				</React.Fragment>
+				</Fragment>
 			))}
 		</div>
 	);
