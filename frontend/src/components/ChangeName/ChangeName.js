@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import {Modal, Button, Form, Col} from 'react-bootstrap';
 import {useToasts} from 'react-toast-notifications';
 import {API_URL} from '../../config';
+import {Dialog, Button, DialogActions, DialogContent, DialogTitle, TextField} from '@material-ui/core';
 
 export const ChangeName = (props) => {
-	const {setChangeNameModal} = props;
+	const {open, onClose, setChangeNameModal} = props;
 	const [name, setName] = useState(localStorage.getItem('user_id') ? localStorage.getItem('name') : '');
 	const {addToast} = useToasts();
 	const submitFrom = async () => {
@@ -26,21 +26,27 @@ export const ChangeName = (props) => {
 		setChangeNameModal(false);
 	};
 	return (
-		<Modal {...props} aria-labelledby="contained-modal-title-vcenter" centered>
-			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-vcenter">Username</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<Form>
-					<Form.Group controlId="formRoomId">
-						<Form.Label>Name</Form.Label>
-						<Col sm="12">
-							<Form.Control placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-						</Col>
-					</Form.Group>
-				</Form>
-				<Button onClick={submitFrom}>Save</Button>
-			</Modal.Body>
-		</Modal>
+		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+			<DialogTitle>Username</DialogTitle>
+			<DialogContent>
+				<TextField
+					margin="dense"
+					id="name"
+					label="Name"
+					type="name"
+					fullWidth
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+				/>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={onClose} color="primary">
+					Cancel
+				</Button>
+				<Button onClick={submitFrom} color="primary">
+					Submit
+				</Button>
+			</DialogActions>
+		</Dialog>
 	);
 };

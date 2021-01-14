@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button} from 'react-bootstrap';
+import {Button} from '@material-ui/core';
 import mapimage from '../../assets/scotlandYard/map-min.png';
 import Panzoom from '@panzoom/panzoom';
 import {Sidebar} from '../../components/Sidebar';

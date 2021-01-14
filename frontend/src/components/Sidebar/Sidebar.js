@@ -1,13 +1,7 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useState} from 'react';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import {SwipeableDrawer, Button, List, Divider, ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
@@ -22,7 +16,7 @@ const useStyles = makeStyles({
 
 export const Sidebar = () => {
 	const classes = useStyles();
-	const [state, setState] = React.useState({
+	const [state, setState] = useState({
 		top: false,
 		left: false,
 		bottom: false,

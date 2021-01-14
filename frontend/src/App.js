@@ -1,5 +1,4 @@
 import React, {useLayoutEffect, useState, useEffect} from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {ToastProvider} from 'react-toast-notifications';
 import {Navbar} from './components/Navbar';

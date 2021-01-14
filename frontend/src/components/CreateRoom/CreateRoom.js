@@ -1,22 +1,58 @@
 import React, {useState, useEffect} from 'react';
-import {Button, Form, Col} from 'react-bootstrap';
+import {Button, TextField, Grid} from '@material-ui/core';
 import {useToasts} from 'react-toast-notifications';
 import {API_URL} from '../../config';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 
-const styles = {
+const useStyles = makeStyles(() => ({
 	btn: {
-		width: '90%',
+		width: '100%',
+		backgroundColor: '#007bff',
+		color: 'white',
 		margin: 'auto',
 	},
 	btnCont: {
 		display: 'flex',
+		margin: '10px 0',
 	},
-};
+	input: {
+		color: 'white',
+	},
+}));
+
+const CssTextField = withStyles({
+	root: {
+		'& label.Mui-focused': {
+			color: 'white !important',
+		},
+
+		'& label': {
+			color: 'white !important',
+		},
+		'& .MuiInputBase-input': {
+			color: '#fff', // Text color
+		},
+		'& .MuiInput-underline:before': {
+			borderBottomColor: '#fff !important', // Semi-transparent underline,
+			borderBottomStyle: 'solid !important',
+		},
+		'& .MuiInput-underline:hover:before': {
+			borderBottomColor: '#fff', // Solid underline on hover
+		},
+		'& .MuiInput-underline:after': {
+			borderBottomColor: '#fff', // Solid underline on focus
+		},
+		'&.Mui-disabled': {
+			color: 'white',
+		},
+	},
+})(TextField);
 
 export const CreateRoom = (props) => {
 	const [roomCode, setRoomCode] = useState('');
 	const [password, setPassword] = useState('');
 	const {addToast} = useToasts();
+	const classes = useStyles();
 
 	useEffect(() => {
 		const getRoomCode = async () => {
@@ -44,29 +80,42 @@ export const CreateRoom = (props) => {
 		console.log(roomCode, password);
 	};
 	return (
-		<Form>
-			<Form.Group controlId="formRoomId">
-				<Form.Label>Room code</Form.Label>
-				<Col sm="12">
-					<Form.Control readOnly value={roomCode} />
-				</Col>
-			</Form.Group>
-
-			<Form.Group controlId="formPassword">
-				<Form.Label>Password</Form.Label>
-				<Col sm="12">
-					<Form.Control
-						type="password"
-						placeholder="Password"
-						onChange={(e) => setPassword(e.target.value)}
+		<>
+			<Grid container spacing={2}>
+				<Grid item xs={12}>
+					<CssTextField
+						autoComplete="off"
+						InputProps={{
+							className: classes.input,
+						}}
+						value={roomCode}
+						disabled
+						fullWidth
+						label="Room Code"
+						id="roomCode"
+						name="roomCode"
 					/>
-				</Col>
-			</Form.Group>
-			<div style={styles.btnCont}>
-				<Button style={styles.btn} onClick={createRoom}>
-					Create
+				</Grid>
+				<Grid item xs={12}>
+					<CssTextField
+						autoComplete="off"
+						InputProps={{
+							className: classes.input,
+						}}
+						onChange={(e) => setPassword(e.target.value)}
+						fullWidth
+						label="Password"
+						id="password"
+						name="password"
+						type="password"
+					/>
+				</Grid>
+			</Grid>
+			<div className={classes.btnCont}>
+				<Button className={classes.btn} onClick={createRoom} color="primary">
+					JOIN
 				</Button>
 			</div>
-		</Form>
+		</>
 	);
 };

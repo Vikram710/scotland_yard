@@ -1,27 +1,68 @@
 import React from 'react';
-import {Modal, Container, Row, Col, Image} from 'react-bootstrap';
+import {Dialog, IconButton, Typography, Grid} from '@material-ui/core';
 import taxiImg from '../../assets/scotlandYard/tickets/taxi.png';
 import busImg from '../../assets/scotlandYard/tickets/bus.png';
 import blackImg from '../../assets/scotlandYard/tickets/secret.png';
 import undergroundImg from '../../assets/scotlandYard/tickets/underground.png';
 import doubleImg from '../../assets/scotlandYard/tickets/double.png';
 
-const styles = {
-	col: {
-		padding: '5px',
-	},
-	row: {
+import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import CloseIcon from '@material-ui/icons/Close';
+
+import {withStyles} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+	cont: {
 		justifyContent: 'center',
 	},
-};
+	item: {
+		display: 'flex',
+		justifyContent: 'center',
+	},
+}));
+
+const styles = (theme) => ({
+	root: {
+		margin: 0,
+		padding: theme.spacing(2),
+	},
+	closeButton: {
+		position: 'absolute',
+		right: theme.spacing(1),
+		top: theme.spacing(1),
+		color: theme.palette.grey[500],
+	},
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+	const {children, classes, onClose, ...other} = props;
+	return (
+		<MuiDialogTitle disableTypography className={classes.root} {...other}>
+			<Typography variant="h6">{children}</Typography>
+			{onClose ? (
+				<IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+					<CloseIcon />
+				</IconButton>
+			) : null}
+		</MuiDialogTitle>
+	);
+});
+
+const DialogContent = withStyles((theme) => ({
+	root: {
+		padding: theme.spacing(2),
+	},
+}))(MuiDialogContent);
 
 export const Rules = (props) => {
+	const {open, onClose} = props;
+	const classes = useStyles();
 	return (
-		<Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered scrollable>
-			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-vcenter">Scotland Yard Rules</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
+		<Dialog open={open} onClose={onClose} maxWidth="lg">
+			<DialogTitle onClose={onClose}>Scotland Yard Rules</DialogTitle>
+			<DialogContent>
 				<h5>Game Objective</h5>
 				<p>
 					The goal of the detectives is to work as a team to corner and catch Mr. X, by moving to the same
@@ -58,25 +99,23 @@ export const Rules = (props) => {
 							must keep his starting position a secret
 						</li>
 					</ul>
-					<Container>
-						<Row className="justify-content-md-center" style={styles.row}>
-							<Col style={styles.col} xs={4} md={4} lg={2}>
-								<Image src={taxiImg} rounded />
-							</Col>
-							<Col style={styles.col} xs={4} md={4} lg={2}>
-								<Image src={busImg} />
-							</Col>
-							<Col style={styles.col} xs={4} md={4} lg={2}>
-								<Image src={undergroundImg} />
-							</Col>
-							<Col style={styles.col} xs={4} md={4} lg={2}>
-								<Image src={blackImg} />
-							</Col>
-							<Col style={styles.col} xs={4} md={4} lg={2}>
-								<Image src={doubleImg} />
-							</Col>
-						</Row>
-					</Container>
+					<Grid container className={classes.cont} spacing={2}>
+						<Grid item className={classes.item} xs={4} md={4} lg={2}>
+							<img alt="taxi" src={taxiImg} />
+						</Grid>
+						<Grid item className={classes.item} xs={4} md={4} lg={2}>
+							<img alt="bus" src={busImg} />
+						</Grid>
+						<Grid item className={classes.item} xs={4} md={4} lg={2}>
+							<img alt="underground" src={undergroundImg} />
+						</Grid>
+						<Grid item className={classes.item} xs={4} md={4} lg={2}>
+							<img alt="black" src={blackImg} />
+						</Grid>
+						<Grid item className={classes.item} xs={4} md={4} lg={2}>
+							<img alt="double" src={doubleImg} />
+						</Grid>
+					</Grid>
 				</div>
 				<h5>How to play</h5>
 				<p>
@@ -173,7 +212,7 @@ export const Rules = (props) => {
 						detectives are too close for comfort.
 					</li>
 				</ul>
-			</Modal.Body>
-		</Modal>
+			</DialogContent>
+		</Dialog>
 	);
 };

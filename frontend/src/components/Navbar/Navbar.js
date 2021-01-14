@@ -1,41 +1,59 @@
 import React, {useState} from 'react';
-import {Navbar as NavbarBootstrap, Nav} from 'react-bootstrap';
 import logo from '../../assets/scotlandYard/logo.png';
+import {AppBar, Toolbar, Typography, Button} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 
 import {Rules} from '../Rules';
 import {ChangeName} from '../ChangeName';
 
+const useStyles = makeStyles((theme) => ({
+	title: {
+		flexGrow: 1,
+	},
+	nav: {
+		backgroundColor: '#333',
+	},
+	btn: {
+		textTransform: 'none',
+		fontSize: '1rem',
+		'&:hover': {
+			color: 'inherit',
+			opacity: 0.75,
+		},
+	},
+}));
+
 export const Navbar = (props) => {
 	const [ruleModal, setRuleModal] = useState(false);
 	const [changeNameModal, setChangeNameModal] = useState(false);
+	const classes = useStyles();
 	return (
 		<div>
-			<NavbarBootstrap collapseOnSelect expand="lg" bg="dark" variant="dark">
-				<NavbarBootstrap.Brand href="/">
-					<img alt="logo" src={logo} width="30" height="30" className="d-inline-block align-top" />
-					Scotland Yard
-				</NavbarBootstrap.Brand>
-				<NavbarBootstrap.Toggle aria-controls="responsive-navbar-nav" />
-				<NavbarBootstrap.Collapse id="responsive-navbar-nav">
-					<Nav className="mr-auto"></Nav>
-					<Nav>
-						<Nav.Link href="/game">Game</Nav.Link>
-						<Nav.Link onClick={() => setRuleModal(true)}>Rules</Nav.Link>
-						<Nav.Link onClick={() => setChangeNameModal(true)}>
-							{localStorage.getItem('user_id') ? localStorage.getItem('name') : 'Name'}
-						</Nav.Link>
-					</Nav>
-				</NavbarBootstrap.Collapse>
-			</NavbarBootstrap>
-
+			<AppBar position="static" className={classes.nav}>
+				<Toolbar>
+					<Typography variant="h6" className={classes.title}>
+						<img alt="logo" src={logo} width="30" height="30" />
+						Scotland Yard
+					</Typography>
+					<Button className={classes.btn} href="/game" color="inherit">
+						Game
+					</Button>
+					<Button className={classes.btn} color="inherit" onClick={() => setRuleModal(true)}>
+						Rules
+					</Button>
+					<Button className={classes.btn} color="inherit" onClick={() => setChangeNameModal(true)}>
+						{localStorage.getItem('user_id') ? localStorage.getItem('name') : 'Name'}
+					</Button>
+				</Toolbar>
+			</AppBar>
 			<div>
 				<div>{props.children}</div>
 			</div>
-			<Rules show={ruleModal} onHide={() => setRuleModal(false)} />
+			<Rules open={ruleModal} onClose={() => setRuleModal(false)} />
 			<ChangeName
-				show={changeNameModal}
+				open={changeNameModal}
 				setChangeNameModal={setChangeNameModal}
-				onHide={() => setChangeNameModal(false)}
+				onClose={() => setChangeNameModal(false)}
 			/>
 		</div>
 	);
