@@ -19,7 +19,7 @@ const roomSchema = new Schema({
 		default: 0,
 	},
 	owner: {
-		type: ObjectId,
+		type: String,
 	},
 	active: {
 		type: Boolean,

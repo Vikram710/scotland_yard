@@ -5,12 +5,14 @@ import {Sidebar} from '../../components/Sidebar';
 import io from 'socket.io-client';
 import {API_URL} from '../../config';
 import {useToasts} from 'react-toast-notifications';
+let socket;
 
 export const Game = (props) => {
 	let [panzoom, setPanzoom] = useState(null);
 	let [stateImg, setStateImg] = useState({});
 	const {addToast} = useToasts();
-	const userId = localStorage.getItem('user_id');
+	let [message,setMessage] = useState('');
+	let [messages,setMessages] = useState([]);
 
 	const showpos = (e) => {
 		const ele = document.getElementById('map');
@@ -33,7 +35,7 @@ export const Game = (props) => {
 		ctx.fillRect(mx, my, 15, 15);
 		ctx.closePath();
 	};
-
+	
 	const drawMap = () => {
 		const canvas = document.getElementById('map');
 		let ctx = canvas.getContext('2d');
@@ -42,6 +44,20 @@ export const Game = (props) => {
 		// get the top left position of the image
 		ctx.drawImage(stateImg, 0, 0, stateImg.width * sc, stateImg.height * sc);
 	};
+	const sendMessage = (event) => {
+			event.preventDefault();
+
+			if(message) {
+				socket.emit('sendMessage',message,()=>setMessage(''));
+			}
+	};
+	useEffect(()=>{
+		const {match} = props;
+		const roomCode = match.params.room;
+		const username = match.params.username;
+		console.log('user ', username);
+		socket = io(API_URL, {query: `room=${roomCode}&username=${username}`});
+	},[API_URL]);
 
 	useEffect(() => {
 		const canvas = document.getElementById('map');
@@ -68,26 +84,22 @@ export const Game = (props) => {
 		panzoomTemp.pan(10, 10);
 		setPanzoom(panzoomTemp);
 		elem.parentElement.addEventListener('wheel', panzoomTemp.zoomWithWheel);
-
-		const {match} = props;
-		const roomCode = match.params.room;
-
-		console.log('user ', userId);
-		const socket = io(API_URL, {query: `room=${roomCode}&userId=${userId}`});
-
+		
 		socket.on('test', (data) => {
 			console.log(data);
+		});
+		socket.on('message', (message) => {
+			setMessages(messages => [...messages,message]);
 		});
 		socket.on('playerJoin', (data) => {
 			const playerName = data.playerName;
 			addToast(`${playerName} just joined`, {appearance: 'success'});
 		});
-		return () => socket.disconnect();
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<>
-			<Sidebar />
+			<Sidebar message={message} messages={messages} setMessage = {setMessage} sendMessage={sendMessage}/>
 			<div style={{width: '100%', height: '100%'}}>
 				<canvas
 					draggable="true"

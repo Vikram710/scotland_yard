@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
 const Models = require('../models/Model');
 
 const Room = Models.Room;
@@ -29,7 +28,7 @@ exports.createRoom = async (req, res) => {
 		else {
 			let newRoom = {
 				roomCode: roomCode,
-				owner: ObjectId(req.body.userId),
+				owner: req.body.userName,
 				active: true,
 			};
 			let room = await Room.create(newRoom);
@@ -41,7 +40,7 @@ exports.createRoom = async (req, res) => {
 
 			let response = {
 				roomCode: roomCode,
-				owner: req.body.userId,
+				owner: req.body.userName,
 			};
 			return res.status(200).json({status_code: 200, message: 'Created Room', ...response});
 		}
@@ -55,9 +54,9 @@ exports.joinRoom = async (req, res) => {
 	let room = await Room.findOne({roomCode: req.params.roomCode});
 	try {
 		if (room) {
-			if (room.players.length < 6 && !room.players.includes(ObjectId(req.body.userId))) {
+			if (room.players.length < 6 && !room.players.includes(req.body.userName)) {
 				//testing purpose condition should be <6 && !includes
-				room.players = [...room.players, ObjectId(req.body.userId)];
+				room.players = [...room.players, req.body.userName];
 				await room.save();
 				return res.status(200).json({status_code: 200, success: false, message: 'Room joined'});
 			} else {

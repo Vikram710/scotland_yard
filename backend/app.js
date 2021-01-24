@@ -13,7 +13,8 @@ const host = (config.ip && config.boolIp) || 'localhost';
 // Import routes
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
-const {User} = require('./models/Model.js');
+const Models = require('./models/Model.js');
+const Room = Models.Room;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -45,23 +46,16 @@ io.set('origins', '*:*');
 io.use(async (socket, next) => {
 	var handshakeData = socket.request;
 	const roomCode = handshakeData._query['room'];
-	const userId = handshakeData._query['userId'];
+	const username = handshakeData._query['username'];
 	socket.roomCode = roomCode;
-	socket.userId = userId;
-
-	console.log('userId ' + userId + ' ' + roomCode);
-
-	if (userId) {
-		const user = await User.findById(userId);
-		socket.username = user.name;
-	}
+	socket.username = username;
+	console.log('username ' + username + ' ' + roomCode);
 
 	next();
 });
 
 io.on('connection', (socket) => {
 	const roomCode = socket.roomCode;
-	const userId = socket.userId;
 	const username = socket.username;
 
 	socket.join(roomCode);
@@ -70,7 +64,10 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		console.log('dis conn');
 	});
-
+	socket.on('sendMessage', (message,callback) => {
+		io.to(roomCode).emit('message',{user: username, text: message});
+		callback();
+	});
 	io.to(roomCode).emit('test', `datasending ${roomCode}`);
 	io.to(roomCode).emit('playerJoin', {
 		playerName: username,
