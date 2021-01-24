@@ -28,7 +28,7 @@ export const App = () => {
 					<Navbar>
 						<Switch>
 							<Route exact path="/" component={Home} />
-							<Route path="/game/:room" component={Game} />
+							<Route path="/game/:room/:username" component={Game} />
 							<Route path="*" component={NotFound} />
 						</Switch>
 					</Navbar>
