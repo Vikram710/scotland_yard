@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 		margin: '4px 0',
 	},
 	typography: {
-		fontSize: '16px',
+		fontSize: '14px',
 		margin: '2px',
 	},
 	img: {

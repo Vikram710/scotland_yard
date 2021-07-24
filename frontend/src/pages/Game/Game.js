@@ -7,6 +7,7 @@ import {Sidebar} from '../../components/Sidebar';
 import {API_URL} from '../../config';
 import {Transport} from '../../components/Transport';
 import {Character} from '../../components/Character';
+import {MrXBoard} from '../../components/MrXBoard';
 
 const mapPosToPosID = (x, y) => {
 	let postitions = JSON.parse(localStorage.getItem('positions'));
@@ -40,6 +41,7 @@ export const Game = (props) => {
 	const [fromPoint, setFromPoint] = useState(0);
 	const [toPoint, setToPoint] = useState(0);
 	const [players, setPlayers] = useState(['red', 'blue', 'green', 'purple', 'yellow']);
+	const [mrXPos, setMrXPos] = useState(Array.from(Array(24).keys()));
 	const classes = useStyles();
 	const showpos = async (e) => {
 		const ele = document.getElementById('map');
@@ -157,7 +159,7 @@ export const Game = (props) => {
 							id="map"></canvas>
 					</div>
 				</Grid>
-				<Grid item xs={4}>
+				<Grid item xs={5}>
 					<Grid container>
 						<Grid item xs={4}>
 							{possibleRoutes.length ? (
@@ -174,6 +176,9 @@ export const Game = (props) => {
 										return <Character key={player} player={player} />;
 								  })
 								: null}
+						</Grid>
+						<Grid item xs={8}>
+							<MrXBoard data={mrXPos} />
 						</Grid>
 					</Grid>
 				</Grid>
