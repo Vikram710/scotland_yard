@@ -26,6 +26,12 @@ const useStyles = makeStyles((theme) => ({
 		height: '30px',
 		verticalAlign: 'top',
 	},
+	children: {
+		backgroundColor: 'black',
+		position: 'absolute',
+		top: '64px',
+		bottom: '0px',
+	},
 }));
 
 export const Navbar = (props) => {
@@ -33,7 +39,7 @@ export const Navbar = (props) => {
 	const [changeNameModal, setChangeNameModal] = useState(false);
 	const classes = useStyles();
 	return (
-		<div>
+		<>
 			<AppBar position="static" className={classes.nav}>
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
@@ -51,15 +57,13 @@ export const Navbar = (props) => {
 					</Button>
 				</Toolbar>
 			</AppBar>
-			<div>
-				<div>{props.children}</div>
-			</div>
+			<div className={classes.children}>{props.children}</div>
 			<Rules open={ruleModal} onClose={() => setRuleModal(false)} />
 			<ChangeName
 				open={changeNameModal}
 				setChangeNameModal={setChangeNameModal}
 				onClose={() => setChangeNameModal(false)}
 			/>
-		</div>
+		</>
 	);
 };

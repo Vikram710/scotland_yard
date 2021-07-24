@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '10px',
 		textAlign: 'center',
 		margin: '8px',
+		backgroundColor: 'whitesmoke',
 	},
 	btn: {
 		fontSize: '14px',
