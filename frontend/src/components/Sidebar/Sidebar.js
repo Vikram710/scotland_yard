@@ -61,7 +61,7 @@ export const Sidebar = () => {
 
 	return (
 		<div>
-			{['left', 'right', 'top', 'bottom'].map((anchor) => (
+			{['left', 'right'].map((anchor) => (
 				<Fragment key={anchor}>
 					<Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
 					<SwipeableDrawer

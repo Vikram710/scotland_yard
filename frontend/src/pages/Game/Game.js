@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Button} from '@material-ui/core';
 import mapimage from '../../assets/scotlandYard/map-min.png';
 import Panzoom from '@panzoom/panzoom';
 import {Sidebar} from '../../components/Sidebar';
@@ -57,9 +56,11 @@ export const Game = (props) => {
 		let panzoomTemp = panzoom
 			? panzoom
 			: Panzoom(elem, {
-					maxScale: 2,
+					maxScale: 4,
 					canvas: true,
+					startScale:1.5,
 					contain: 'outside',
+					cursor:'default'
 			  });
 		panzoomTemp.pan(10, 10);
 		setPanzoom(panzoomTemp);
@@ -69,8 +70,7 @@ export const Game = (props) => {
 	return (
 		<>
 			<Sidebar />
-			<Button variant="primary">open sidebar</Button>
-			<div style={{width: '100%', height: '100%'}}>
+			<div style={{width: '800px', height: '100%', marginLeft:'10px'}}>
 				<canvas
 					draggable="true"
 					style={{width: '100%', height: '100%'}}
