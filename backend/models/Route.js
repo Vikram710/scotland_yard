@@ -11,6 +11,7 @@ const routesSchema = new Schema({
 	},
 	mode: {
 		type: ObjectId,
+		ref: 'Ticket',
 	},
 });
 module.exports = routesSchema;

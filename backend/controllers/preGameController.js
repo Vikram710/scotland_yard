@@ -5,6 +5,7 @@ const Models = require('../models/Model');
 const Ticket = Models.Ticket;
 const Player = Models.Player;
 const Character = Models.Character;
+const Position = Models.Position;
 
 const characterTicketRelation = {
 	detective: {
@@ -44,7 +45,6 @@ const getRandomPosition = (initialPositions) => {
 };
 
 exports.orderAndSelect = async (req, res) => {
-	console.log(req.body);
 	try {
 		let initialPositions = [];
 		for (let i = 0; i < req.body.orderedPlayers.length; i++) {
@@ -59,7 +59,7 @@ exports.orderAndSelect = async (req, res) => {
 				await allocateTickets(player, character);
 			}
 		}
-		return res.status(400).json({status_code: 400, message: 'Ordered'});
+		return res.status(200).json({status_code: 200, message: 'Ordered'});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({status_code: 500, message: 'Internal server error'});
@@ -67,10 +67,9 @@ exports.orderAndSelect = async (req, res) => {
 };
 
 exports.getCharacters = async (req, res) => {
-	console.log(req.body);
 	try {
 		let characters = await Character.find({});
-		return res.status(400).json({status_code: 400, message: characters});
+		return res.status(200).json({status_code: 200, message: characters});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({status_code: 500, message: 'Internal server error'});
@@ -78,10 +77,19 @@ exports.getCharacters = async (req, res) => {
 };
 
 exports.getTickets = async (req, res) => {
-	console.log(req.body);
 	try {
 		let tickets = await Ticket.find({});
-		return res.status(400).json({status_code: 400, message: tickets});
+		return res.status(200).json({status_code: 200, message: tickets});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+	}
+};
+
+exports.getPositions = async (req, res) => {
+	try {
+		let positions = await Position.find({});
+		return res.status(200).json({status_code: 200, message: positions});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({status_code: 500, message: 'Internal server error'});

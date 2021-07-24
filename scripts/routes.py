@@ -26,7 +26,7 @@ myclient = pymongo.MongoClient("mongodb://"+db_server+"/")
 db=myclient[db_name]
 routeDb = db['routes']
 routeData = list(routeDb.find({}))
-modeDb = db['transports']
+modeDb = db['tickets']
 modeData = list(modeDb.find({}))
 
 if len(routeData) == 0:

@@ -13,7 +13,6 @@ const validateUserDetails = (user) => {
 };
 
 exports.createUser = async (req, res) => {
-	console.log(req.body);
 	let [err, isError] = validateUserDetails(req.body);
 	try {
 		if (!isError) {

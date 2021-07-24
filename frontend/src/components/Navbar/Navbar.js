@@ -21,6 +21,11 @@ const useStyles = makeStyles((theme) => ({
 			opacity: 0.75,
 		},
 	},
+	logo: {
+		width: '30px',
+		height: '30px',
+		verticalAlign: 'top',
+	},
 }));
 
 export const Navbar = (props) => {
@@ -32,7 +37,7 @@ export const Navbar = (props) => {
 			<AppBar position="static" className={classes.nav}>
 				<Toolbar>
 					<Typography variant="h6" className={classes.title}>
-						<img alt="logo" src={logo} width="30" height="30" />
+						<img alt="logo" src={logo} className={classes.logo} />
 						Scotland Yard
 					</Typography>
 					<Button className={classes.btn} href="/game" color="inherit">
