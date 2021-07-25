@@ -3,7 +3,6 @@ import {Grid} from '@material-ui/core/';
 import {makeStyles} from '@material-ui/core/styles';
 import mapimage from '../../assets/scotlandYard/map-min.png';
 import Panzoom from '@panzoom/panzoom';
-import {Sidebar} from '../../components/Sidebar';
 import {API_URL} from '../../config';
 import {Transport} from '../../components/Transport';
 import {Character} from '../../components/Character';
@@ -31,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '14px',
 		margin: '2px',
 	},
+	grid: {
+		marginTop: '20px',
+	},
 }));
 
 export const Game = (props) => {
@@ -38,7 +40,7 @@ export const Game = (props) => {
 	const [stateImg, setStateImg] = useState({});
 	const [possibleRoutes, setPossibleRoutes] = useState([]);
 	const [selectRoute, setSelectRoute] = useState('');
-	const [fromPoint, setFromPoint] = useState(0);
+	const [fromPoint, setFromPoint] = useState(82);
 	const [toPoint, setToPoint] = useState(0);
 	const [players, setPlayers] = useState(['red', 'blue', 'green', 'purple', 'yellow']);
 	const [mrXPos, setMrXPos] = useState(Array.from(Array(24).keys()));
@@ -148,7 +150,6 @@ export const Game = (props) => {
 
 	return (
 		<>
-			<Sidebar />
 			<Grid container className={classes.grid}>
 				<Grid item xs={7}>
 					<div style={{width: '95%', height: '100%', margin: 'auto'}}>

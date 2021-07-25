@@ -12,6 +12,9 @@ const useStyles = makeStyles({
 	fullList: {
 		width: 'auto',
 	},
+	root: {
+		margin: '10px',
+	},
 });
 
 export const Sidebar = () => {
@@ -60,10 +63,12 @@ export const Sidebar = () => {
 	);
 
 	return (
-		<div>
+		<div className={classes.root}>
 			{['left', 'right'].map((anchor) => (
 				<Fragment key={anchor}>
-					<Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
+					<Button onClick={toggleDrawer(anchor, true)} variant="contained" color="primary">
+						{anchor}
+					</Button>
 					<SwipeableDrawer
 						anchor={anchor}
 						open={state[anchor]}

@@ -42,6 +42,21 @@ const useStyles = makeStyles((theme) => ({
 		width: '30px',
 		marginRight: '10px',
 	},
+	route: {
+		display: 'flex',
+		justifyContent: 'space-evenly',
+	},
+	point: {
+		width: '50px',
+		height: '50px',
+		borderRadius: '50%',
+		border: '5px solid #000080',
+		lineHeight: '40px',
+	},
+	arrow: {
+		lineHeight: '50px',
+		fontSize: '32px',
+	},
 }));
 
 export const Transport = (props) => {
@@ -49,8 +64,11 @@ export const Transport = (props) => {
 	const {fromPoint, toPoint, handleRouteSelection, selectRoute, possibleRoutes} = props;
 	return (
 		<Paper className={classes.paper}>
-			<Typography className={classes.typography}>From: {fromPoint}</Typography>
-			<Typography className={classes.typography}>To: {toPoint}</Typography>
+			<div className={classes.route}>
+				<div className={classes.point}>{fromPoint}</div>
+				<div className={classes.arrow}>&rarr;</div>
+				<div className={classes.point}>{toPoint}</div>
+			</div>
 			<Select onChange={handleRouteSelection} value={selectRoute} className={classes.select}>
 				{possibleRoutes.map((route) => {
 					return (

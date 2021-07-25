@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
 		textAlign: 'center',
 		width: '25px',
 		height: '25px',
-		lineHeight: '25px',
+		lineHeight: '15px',
 		padding: '5px',
 	},
 	revealDiv: {
-		padding: '24px 30px',
+		padding: '18px 26px',
 		color: 'white',
 		fontSize: '32px',
 	},
@@ -68,7 +68,7 @@ export const MrXBoard = (props) => {
 		let newRevealCards = [...revealCards];
 		let ridx = revealTurn.indexOf(idx);
 		console.log(ridx, idx);
-		if (ridx != -1) newRevealCards[ridx] = !newRevealCards[ridx];
+		if (ridx !== -1) newRevealCards[ridx] = !newRevealCards[ridx];
 		setRevealCards(newRevealCards);
 	};
 	console.log(revealCards);
@@ -86,7 +86,7 @@ export const MrXBoard = (props) => {
 										{ele + 1}
 									</span>
 								</div>
-								{revealTurn.indexOf(ele + 1) != -1 && revealCards[revealTurn.indexOf(ele + 1)] ? (
+								{revealTurn.indexOf(ele + 1) !== -1 && revealCards[revealTurn.indexOf(ele + 1)] ? (
 									<div className={classes.revealDiv}>{ele * 20}</div>
 								) : (
 									<img
