@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dialog, DialogContent, DialogTitle, Paper, Typography, Avatar} from '@material-ui/core';
+import {Dialog, DialogContent, DialogTitle, Paper, List, ListItem, Avatar, ListItemAvatar} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -11,13 +11,7 @@ import TimelineDot from '@material-ui/lab/TimelineDot';
 import taxi from '../../assets/scotlandYard/tickets/taxi.png';
 import bus from '../../assets/scotlandYard/tickets/bus.png';
 import underground from '../../assets/scotlandYard/tickets/underground.png';
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
+import black from '../../assets/scotlandYard/tickets/black.png';
 
 const playerColorMap = {
 	red: '#DC143C',
@@ -31,6 +25,7 @@ const ticketImgMap = {
 	taxi,
 	bus,
 	underground,
+	black,
 };
 
 const useStyles = makeStyles((theme) => ({

@@ -13,13 +13,13 @@ const characterTicketRelation = {
 		taxi: 4,
 		bus: 3,
 		underground: 3,
-		boat: 5,
+		black: 5,
 	},
 	detective: {
 		taxi: 11,
 		bus: 8,
 		underground: 4,
-		boat: 0,
+		black: 0,
 	},
 };
 
@@ -28,7 +28,7 @@ const allocateTickets = async (player, character) => {
 		let tickets = await Ticket.find({});
 		let ticketObject = {};
 		tickets.forEach((ele) => {
-			ticketObject[ele._id] = characterTicketRelation[character.role][ele.name];
+			ticketObject[ele.name] = characterTicketRelation[character.role][ele.name];
 		});
 		player.tickets = ticketObject;
 		player.save();
@@ -107,7 +107,7 @@ exports.getPositions = async (req, res) => {
 exports.getRoomDetails = async (req, res) => {
 	try {
 		let room = await Room.findOne({_id: req.body.roomId}).populate('users').populate('owner');
-		let players = await Player.find({roomId: req.body.roomId}).populate('user');
+		let players = await Player.find({roomId: req.body.roomId}).populate('user').populate('character');
 		return res.status(200).json({message: {room, players}});
 	} catch (error) {
 		console.log(error);

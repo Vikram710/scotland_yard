@@ -5,11 +5,13 @@ import {makeStyles} from '@material-ui/core/styles';
 import taxi from '../../assets/scotlandYard/tickets/taxi.png';
 import bus from '../../assets/scotlandYard/tickets/bus.png';
 import underground from '../../assets/scotlandYard/tickets/underground.png';
+import black from '../../assets/scotlandYard/tickets/black.png';
 
 const ticketImgMap = {
 	taxi,
 	bus,
 	underground,
+	black,
 };
 
 const useStyles = makeStyles((theme) => ({

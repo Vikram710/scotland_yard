@@ -2,7 +2,7 @@ import React from 'react';
 import {Dialog, IconButton, Typography, Grid} from '@material-ui/core';
 import taxiImg from '../../assets/scotlandYard/tickets/taxi.png';
 import busImg from '../../assets/scotlandYard/tickets/bus.png';
-import blackImg from '../../assets/scotlandYard/tickets/secret.png';
+import blackImg from '../../assets/scotlandYard/tickets/black.png';
 import undergroundImg from '../../assets/scotlandYard/tickets/underground.png';
 import doubleImg from '../../assets/scotlandYard/tickets/double.png';
 

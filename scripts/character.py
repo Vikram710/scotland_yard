@@ -16,8 +16,12 @@ if len(modeData) == 0:
     #seed
     print("Starting to seed characters, do not interrupt")
     for c in characters:
+        role = 'mrX'
+        if c != 'Mr.X':
+            role = 'detective'
         data = {
-            'name':c
+            'name':c,
+            'role': role
         }
         data = characterDb.insert_one(data)
     print("characters seeded")

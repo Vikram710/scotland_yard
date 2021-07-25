@@ -109,6 +109,8 @@ export const Lobby = () => {
 							case 5:
 								character = 'YELLOW';
 								break;
+							default:
+								character = 'MrX';
 						}
 						return (
 							<ListItem key={player.id}>

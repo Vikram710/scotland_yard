@@ -8,14 +8,26 @@ import {Transport} from '../../components/Transport';
 import {Character} from '../../components/Character';
 import {MrXBoard} from '../../components/MrXBoard';
 
+const playerColorMap = {
+	Red: '#DC143C',
+	Blue: '#ADD8E6',
+	Purple: '#800080',
+	Green: '#00FF7F',
+	Yellow: 'gold',
+	'Mr.X': '#333',
+};
+
 const mapPosToPosID = (x, y) => {
 	let postitions = JSON.parse(localStorage.getItem('positions'));
 	function distance(p) {
 		return Math.sqrt(Math.pow(x - p.map_x, 2) + Math.pow(y - p.map_y, 2));
 	}
 	let closest = postitions.reduce((a, b) => (distance(a) < distance(b) ? a : b));
-	console.log(closest);
 	return closest;
+};
+const placeToMapPos = (place) => {
+	let postitions = JSON.parse(localStorage.getItem('positions'));
+	return postitions[place];
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +54,7 @@ export const Game = (props) => {
 	const [selectRoute, setSelectRoute] = useState('');
 	const [fromPoint, setFromPoint] = useState(82);
 	const [toPoint, setToPoint] = useState(0);
-	const [players, setPlayers] = useState(['red', 'blue', 'green', 'purple', 'yellow']);
+	const [players, setPlayers] = useState([]);
 	const [mrXPos, setMrXPos] = useState(Array.from(Array(24).keys()));
 	const classes = useStyles();
 	const showpos = async (e) => {
@@ -61,6 +73,7 @@ export const Game = (props) => {
 		mx *= canvas.width;
 		my *= canvas.height;
 		drawMap();
+		drawPositions()
 		let point = mapPosToPosID(mx - 60, my - 60);
 		ctx.beginPath();
 		ctx.arc(point.map_x + 60, point.map_y + 60, 20, 0, 2 * Math.PI);
@@ -79,6 +92,23 @@ export const Game = (props) => {
 		ctx.drawImage(stateImg, 0, 0, stateImg.width * sc, stateImg.height * sc);
 	};
 
+	const drawPositions = () => {
+		const canvas = document.getElementById('map');
+		let ctx = canvas.getContext('2d');
+
+		if(players.length > 0) {
+			players.forEach((player) => {
+				let point = placeToMapPos(player.position);
+				ctx.beginPath();
+				ctx.arc(point.map_x + 60, point.map_y + 60, 30, 0, 2 * Math.PI);
+				ctx.strokeStyle = playerColorMap[player.character.name];
+				ctx.lineWidth = 16;
+				ctx.stroke();
+				ctx.closePath();
+			});
+		}
+	};
+
 	useEffect(() => {
 		const fetchPositions = async () => {
 			try {
@@ -88,7 +118,6 @@ export const Game = (props) => {
 						headers: {'Content-type': 'application/json; charset=UTF-8'},
 					});
 					response = await response.json();
-					console.log(response);
 					localStorage.setItem('positions', JSON.stringify(response.message));
 				}
 			} catch (error) {
@@ -98,6 +127,23 @@ export const Game = (props) => {
 
 		fetchPositions();
 	});
+
+	useEffect(() => {
+		let data = {
+			roomId: localStorage.getItem('roomId'),
+		};
+		const getRoomPLayers = async () => {
+			let response = await fetch(API_URL + 'pre_game/get_room_details', {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {'Content-type': 'application/json; charset=UTF-8'},
+			});
+			response = await response.json();
+			console.log(response);
+			setPlayers(response.message.players);
+		};
+		getRoomPLayers();
+	}, []);
 
 	useEffect(() => {
 		const canvas = document.getElementById('map');
@@ -128,6 +174,13 @@ export const Game = (props) => {
 		elem.parentElement.addEventListener('wheel', panzoomTemp.zoomWithWheel);
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+	useEffect(() => {
+		if (players.length > 0) {
+			drawMap();
+			drawPositions();
+		}
+	}, [players]);
+
 	const getRoutes = async (toPoint) => {
 		let data = {toPoint};
 		try {
@@ -152,7 +205,7 @@ export const Game = (props) => {
 		<>
 			<Grid container className={classes.grid}>
 				<Grid item xs={7}>
-					<div style={{width: '95%', height: '100%', margin: 'auto'}}>
+					<div style={{width: '99%', height: '100%', margin: 'auto'}}>
 						<canvas
 							draggable="true"
 							style={{width: '100%', height: '100%'}}
@@ -174,7 +227,7 @@ export const Game = (props) => {
 							) : null}
 							{players.length
 								? players.map((player) => {
-										return <Character key={player} player={player} />;
+										return <Character key={player._id} player={player} />;
 								  })
 								: null}
 						</Grid>

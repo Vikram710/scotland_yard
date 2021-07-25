@@ -1,16 +1,24 @@
 import React from 'react';
-import {Paper, Typography} from '@material-ui/core';
+import {Paper, Typography, Grid} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import taxi from '../../assets/scotlandYard/tickets/taxi.png';
 import bus from '../../assets/scotlandYard/tickets/bus.png';
 import underground from '../../assets/scotlandYard/tickets/underground.png';
+import black from '../../assets/scotlandYard/tickets/black.png';
 
 const playerColorMap = {
-	red: '#DC143C',
-	blue: '#ADD8E6',
-	purple: '#800080',
-	green: '#00FF7F',
-	yellow: '#FAFAD2',
+	Red: '#DC143C',
+	Blue: '#ADD8E6',
+	Purple: '#800080',
+	Green: '#00FF7F',
+	Yellow: '#FAFAD2',
+	'Mr.X': '#333',
+};
+const ticketImgMap = {
+	taxi,
+	bus,
+	underground,
+	black,
 };
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -19,13 +27,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 	img: {
 		verticalAlign: 'middle',
-		width: '30px',
+		width: '40px',
+	},
+	gridItem: {
+		fontSize: '18px',
+		textAlign: 'center',
 	},
 	typography: {
-		fontSize: '16px',
-		margin: '2px',
+		fontSize: '20px',
 	},
 }));
+
+const leftPad = (number, targetLength) => {
+	var output = number + '';
+	while (output.length < targetLength) {
+		output = '0' + output;
+	}
+	return output;
+};
 
 export const Character = (props) => {
 	const classes = useStyles();
@@ -35,19 +54,20 @@ export const Character = (props) => {
 		<Paper
 			className={classes.paper}
 			style={{
-				backgroundColor: playerColorMap[player],
-				color: theme.palette.getContrastText(playerColorMap[player]),
+				backgroundColor: playerColorMap[player.character.name],
+				color: theme.palette.getContrastText(playerColorMap[player.character.name]),
 			}}>
-			<Typography className={classes.typography}>Name ({player})</Typography>
-			<Typography className={classes.typography}>
-				<img alt="logo" src={taxi} className={classes.img} /> 10
-			</Typography>
-			<Typography className={classes.typography}>
-				<img alt="logo" src={bus} className={classes.img} /> 10
-			</Typography>
-			<Typography className={classes.typography}>
-				<img alt="logo" src={underground} className={classes.img} /> 10
-			</Typography>
+			<Typography className={classes.typography}>{`${player.user.name} (${player.character.name})`}</Typography>
+			<Grid container>
+				{Object.keys(player.tickets).map((ele, idx) => {
+					return (
+						<Grid item xs={6} className={classes.gridItem} key={idx}>
+							<img alt={ele} src={ticketImgMap[ele]} className={classes.img} />{' '}
+							{leftPad(player.tickets[ele], 2)}
+						</Grid>
+					);
+				})}
+			</Grid>
 		</Paper>
 	);
 };
