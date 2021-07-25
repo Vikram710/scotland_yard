@@ -24,12 +24,12 @@ exports.createUser = async (req, res) => {
 				name: user.name,
 				id: user._id,
 			};
-			return res.status(200).json({status_code: 200, message: 'Success', ...response});
+			return res.status(200).json({message: 'Success', ...response});
 		} else {
-			return res.status(400).json({status_code: 400, message: err});
+			return res.status(400).json({message: err});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };

@@ -24,9 +24,9 @@ const createRoomCode = async () => {
 
 exports.getRoomCode = async (req, res) => {
 	let roomCode = await createRoomCode();
-	if (roomCode === -1) return res.status(500).json({status_code: 500, message: 'Internal server error'});
+	if (roomCode === -1) return res.status(500).json({message: 'Internal server error'});
 
-	return res.status(200).json({status_code: 200, roomCode});
+	return res.status(200).json({roomCode});
 };
 
 exports.createRoom = async (req, res) => {
@@ -50,10 +50,10 @@ exports.createRoom = async (req, res) => {
 			owner: req.body.userId,
 			game: game._id,
 		};
-		return res.status(200).json({status_code: 200, message: 'Created Room', ...response});
+		return res.status(200).json({message: 'Created Room', ...response});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };
 
@@ -77,6 +77,6 @@ exports.joinRoom = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };

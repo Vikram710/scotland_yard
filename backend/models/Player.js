@@ -6,21 +6,24 @@ const Schema = mongoose.Schema,
 const playerSchema = new Schema({
 	user: {
 		type: ObjectId,
+		ref: 'User',
 	},
 	character: {
 		type: ObjectId,
+		ref: 'Character',
 	},
 	roomId: {
 		type: ObjectId,
+		ref: 'Room',
 	},
 	tickets: {
 		type: Mixed,
-		default: {},
+		default: {}, //{"ticketId":10}
 	},
 	position: {
 		type: Number,
 	},
-	turn: {
+	roundNumber: {
 		type: Number,
 	},
 	online: {

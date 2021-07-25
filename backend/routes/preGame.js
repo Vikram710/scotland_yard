@@ -4,7 +4,7 @@ const {getCharacters, getTickets, orderAndSelect, getPositions} = require('../co
 
 router.post('/get_tickets', getTickets);
 router.get('/get_characters', getCharacters);
-router.post('/pre_game/order_select', orderAndSelect);
+router.post('/order_select', orderAndSelect);
 router.get('/get_positions', getPositions);
 
 module.exports = router;

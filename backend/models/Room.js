@@ -13,17 +13,27 @@ const roomSchema = new Schema({
 	},
 	players: {
 		type: Array,
-		default: [],
+		default: [{type: ObjectId, ref: 'Player'}],
 	},
 	turn: {
 		type: ObjectId,
+		ref: 'Player',
 	},
 	roundNumber: {
 		type: Number,
-		default: 0,
+		default: 1,
 	},
 	owner: {
 		type: ObjectId,
+		ref: 'User',
+	},
+	moves: {
+		type: Array,
+		default: [{type: ObjectId, ref: 'Move'}],
+	},
+	winner: {
+		type: String,
+		default: '', // dectectives or MrX
 	},
 	active: {
 		type: Boolean,

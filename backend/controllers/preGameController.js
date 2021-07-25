@@ -9,15 +9,15 @@ const Position = Models.Position;
 
 const characterTicketRelation = {
 	detective: {
-		taxi: 0,
-		bus: 0,
-		underground: 0,
-		black: 0,
+		taxi: 4,
+		bus: 3,
+		underground: 3,
+		black: 5,
 	},
 	mrX: {
-		taxi: 0,
-		bus: 0,
-		underground: 0,
+		taxi: 11,
+		bus: 8,
+		underground: 4,
 		black: 0,
 	},
 };
@@ -59,39 +59,39 @@ exports.orderAndSelect = async (req, res) => {
 				await allocateTickets(player, character);
 			}
 		}
-		return res.status(200).json({status_code: 200, message: 'Ordered'});
+		return res.status(200).json({message: 'Ordered'});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };
 
 exports.getCharacters = async (req, res) => {
 	try {
 		let characters = await Character.find({});
-		return res.status(200).json({status_code: 200, message: characters});
+		return res.status(200).json({message: characters});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };
 
 exports.getTickets = async (req, res) => {
 	try {
 		let tickets = await Ticket.find({});
-		return res.status(200).json({status_code: 200, message: tickets});
+		return res.status(200).json({message: tickets});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };
 
 exports.getPositions = async (req, res) => {
 	try {
 		let positions = await Position.find({});
-		return res.status(200).json({status_code: 200, message: positions});
+		return res.status(200).json({message: positions});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).json({status_code: 500, message: 'Internal server error'});
+		return res.status(500).json({message: 'Internal server error'});
 	}
 };
