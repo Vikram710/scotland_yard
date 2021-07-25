@@ -4,7 +4,6 @@ const Models = require('../models/Model');
 
 const Room = Models.Room;
 const Player = Models.Player;
-const Game = Models.Game;
 
 const createRoomCode = async () => {
 	let roomCode = String(Math.round(Math.random() * Math.pow(10, 9)));
@@ -35,20 +34,20 @@ exports.createRoom = async (req, res) => {
 			roomCode: req.body.roomCode,
 			password: req.body.password,
 			owner: ObjectId(req.body.userId),
-			players: [ObjectId(req.body.userId)],
+			users: [ObjectId(req.body.userId)],
 			active: true,
 		};
 		let room = await Room.create(newRoom);
-
-		let newGame = {
+		let newPlayer = {
+			user: ObjectId(req.body.userId),
 			roomId: room._id,
+			online: true,
 		};
-		let game = await Game.create(newGame);
-
+		let player = await Player.create(newPlayer);
 		let response = {
 			roomId: room._id,
 			owner: req.body.userId,
-			game: game._id,
+			playerId: player._id,
 		};
 		return res.status(200).json({message: 'Created Room', ...response});
 	} catch (error) {
@@ -62,18 +61,29 @@ exports.joinRoom = async (req, res) => {
 	try {
 		if (room) {
 			if (
-				room.players.length < 6 &&
-				!room.players.includes(ObjectId(req.body.userId)) &&
+				room.users.length < 6 &&
+				!room.users.includes(ObjectId(req.body.userId)) &&
 				room.password === req.body.password
 			) {
-				room.players = [...room.players, ObjectId(req.body.userId)];
+				room.users = [...room.users, ObjectId(req.body.userId)];
 				await room.save();
-				return res.status(200).json({success: false, error: 'Room joined'});
+				let newPlayer = {
+					user: ObjectId(req.body.userId),
+					roomId: room._id,
+					online: true,
+				};
+				let player = await Player.create(newPlayer);
+				let response = {
+					roomId: room._id,
+					owner: req.body.userId,
+					playerId: player._id,
+				};
+				return res.status(200).json({success: true, message: 'Room joined', ...response});
 			} else {
-				return res.status(400).json({success: false, error: 'Cannot join room'});
+				return res.status(400).json({success: false, message: 'Cannot join room'});
 			}
 		} else {
-			return res.status(400).json({success: false, error: 'Room not found'});
+			return res.status(400).json({success: false, message: 'Room not found'});
 		}
 	} catch (error) {
 		console.log(error);

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import io from 'socket.io-client';
 import {API_URL} from '../../config';
-
+import mapBg from '../../assets/scotlandYard/map-min.png';
 import {CreateRoom} from '../../components/CreateRoom';
 import {JoinRoom} from '../../components/JoinRoom';
 
@@ -27,19 +27,22 @@ function TabPanel(props) {
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		marginTop: '5%',
+		height: '100%',
+		backgroundColor: 'white',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundImage: `url(${mapBg})`,
+		backgroundPosition: 'center',
+	},
+	paper: {
 		backgroundColor: '#333',
+		position: 'absolute',
 		borderRadius: '8px',
 		maxWidth: 500,
 		margin: 'auto',
 		color: '#fff',
 		marginBottom: '20px',
-
-		[theme.breakpoints.down('xs')]: {
-			marginLeft: '5%',
-			marginRight: '5%',
-			marginTop: '15%',
-		},
 	},
 	indicator: {
 		height: '100%',
@@ -73,24 +76,26 @@ export const Home = ({location}) => {
 	};
 
 	return (
-		<Paper className={classes.root} elevation={5}>
-			<AppBar position="static" elevation={3} classes={{root: classes.appbar}}>
-				<Tabs
-					value={value}
-					onChange={handleChange}
-					variant="fullWidth"
-					aria-label="full width tabs example"
-					classes={{indicator: classes.indicator}}>
-					<Tab className={classes.tab} disableFocusRipple disableRipple label="Create Room" />
-					<Tab className={classes.tab} disableFocusRipple disableRipple label="Join Room" />
-				</Tabs>
-			</AppBar>
-			<TabPanel value={value} index={0}>
-				<CreateRoom />
-			</TabPanel>
-			<TabPanel value={value} index={1}>
-				<JoinRoom />
-			</TabPanel>
-		</Paper>
+		<div className={classes.root}>
+			<Paper className={classes.paper} elevation={5}>
+				<AppBar position="static" elevation={3} classes={{root: classes.appbar}}>
+					<Tabs
+						value={value}
+						onChange={handleChange}
+						variant="fullWidth"
+						aria-label="full width tabs example"
+						classes={{indicator: classes.indicator}}>
+						<Tab className={classes.tab} disableFocusRipple disableRipple label="Create Room" />
+						<Tab className={classes.tab} disableFocusRipple disableRipple label="Join Room" />
+					</Tabs>
+				</AppBar>
+				<TabPanel value={value} index={0}>
+					<CreateRoom />
+				</TabPanel>
+				<TabPanel value={value} index={1}>
+					<JoinRoom />
+				</TabPanel>
+			</Paper>
+		</div>
 	);
 };

@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
 		top: '64px',
 		bottom: '0px',
 		left: '73px',
-		right:0
+		right: 0,
 	},
 	username: {
 		flex: 1,

@@ -63,10 +63,10 @@ const initialiseUserLocal = (req, res, next) => {
 app.use(initialiseUserLocal);
 
 // Routes
-app.use('/room',roomRouter);
-app.use('/user',userRouter);
-app.use('/pre_game',preGameRouter);
-app.use('/game',gameRouter);
+app.use('/room', roomRouter);
+app.use('/user', userRouter);
+app.use('/pre_game', preGameRouter);
+app.use('/game', gameRouter);
 
 //Listen
 server.listen(port, host, () => {

@@ -5,6 +5,7 @@ import {Navbar} from './components/Navbar';
 import {Home} from './pages/Home';
 import {NotFound} from './pages/NotFound';
 import {Game} from './pages/Game';
+import {Lobby} from './pages/Lobby';
 
 export const App = () => {
 	const [size, setSize] = useState(0);
@@ -28,6 +29,7 @@ export const App = () => {
 						<Switch>
 							<Route exact path="/" component={Home} />
 							<Route path="/game" component={Game} />
+							<Route path="/lobby" component={Lobby} />
 							<Route path="*" component={NotFound} />
 						</Switch>
 					</Navbar>

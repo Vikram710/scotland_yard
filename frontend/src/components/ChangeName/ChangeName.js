@@ -11,18 +11,34 @@ export const ChangeName = (props) => {
 		let data = {
 			name,
 		};
-		if (!localStorage.getItem('user_id')) {
-			let response = await fetch(API_URL + 'user/create', {
-				method: 'post',
-				body: JSON.stringify(data),
-				headers: {'Content-type': 'application/json; charset=UTF-8'},
-			});
-			response = await response.json();
-			localStorage.setItem('name', response.name);
-			localStorage.setItem('user_id', response.id);
+		try {
+			if (!localStorage.getItem('user_id')) {
+				let response = await fetch(API_URL + 'user/create', {
+					method: 'post',
+					body: JSON.stringify(data),
+					headers: {'Content-type': 'application/json; charset=UTF-8'},
+				});
+				response = await response.json();
+				localStorage.setItem('name', response.name);
+				localStorage.setItem('user_id', response.id);
+				addToast('Success', {appearance: 'success'});
+			} else {
+				data.id = localStorage.getItem('user_id');
+				let response = await fetch(API_URL + 'user/update', {
+					method: 'post',
+					body: JSON.stringify(data),
+					headers: {'Content-type': 'application/json; charset=UTF-8'},
+				});
+				response = await response.json();
+				console.log(response);
+				localStorage.setItem('name', response.name);
+				localStorage.setItem('user_id', response.id);
+				addToast('Success', {appearance: 'success'});
+			}
+		} catch (err) {
+			console.log(err);
+			addToast('Error', {appearance: 'error'});
 		}
-
-		addToast('Success', {appearance: 'success', autoDismiss: true});
 		setChangeNameModal(false);
 	};
 	return (

@@ -11,10 +11,7 @@ const roomSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	players: {
-		type: Array,
-		default: [{type: ObjectId, ref: 'Player'}],
-	},
+	users: [{type: ObjectId, ref: 'User'}],
 	turn: {
 		type: ObjectId,
 		ref: 'Player',
@@ -27,10 +24,7 @@ const roomSchema = new Schema({
 		type: ObjectId,
 		ref: 'User',
 	},
-	moves: {
-		type: Array,
-		default: [{type: ObjectId, ref: 'Move'}],
-	},
+	moves: [{type: ObjectId, ref: 'Move'}],
 	winner: {
 		type: String,
 		default: '', // dectectives or MrX
