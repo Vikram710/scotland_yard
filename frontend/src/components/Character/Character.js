@@ -57,7 +57,10 @@ export const Character = (props) => {
 				backgroundColor: playerColorMap[player.character.name],
 				color: theme.palette.getContrastText(playerColorMap[player.character.name]),
 			}}>
-			<Typography className={classes.typography}>{`${player.user.name} (${player.character.name})`}</Typography>
+			<Typography
+				className={
+					classes.typography
+				}>{`${player.user.name} (${player.character.name}) -> ${player.position}`}</Typography>
 			<Grid container>
 				{Object.keys(player.tickets).map((ele, idx) => {
 					return (

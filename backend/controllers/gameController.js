@@ -9,8 +9,9 @@ const Position = Models.Position;
 const Route = Models.Route;
 
 exports.getPossibleRoutes = async (req, res) => {
-	let currentPoint = 82;
 	try {
+		let p = await Player.findOne({_id: req.body.playerId});
+		let currentPoint = p.position;
 		let routes = await Route.find({
 			$or: [
 				{point_1: currentPoint, point_2: req.body.toPoint},

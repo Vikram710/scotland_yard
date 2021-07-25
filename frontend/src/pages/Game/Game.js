@@ -27,7 +27,7 @@ const mapPosToPosID = (x, y) => {
 };
 const placeToMapPos = (place) => {
 	let postitions = JSON.parse(localStorage.getItem('positions'));
-	return postitions[place];
+	return postitions[place - 1];
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -52,10 +52,11 @@ export const Game = (props) => {
 	const [stateImg, setStateImg] = useState({});
 	const [possibleRoutes, setPossibleRoutes] = useState([]);
 	const [selectRoute, setSelectRoute] = useState('');
-	const [fromPoint, setFromPoint] = useState(82);
 	const [toPoint, setToPoint] = useState(0);
 	const [players, setPlayers] = useState([]);
 	const [mrXPos, setMrXPos] = useState(Array.from(Array(24).keys()));
+	const [user, setUser] = useState({});
+	const playerId = localStorage.getItem('playerId');
 	const classes = useStyles();
 	const showpos = async (e) => {
 		const ele = document.getElementById('map');
@@ -73,11 +74,13 @@ export const Game = (props) => {
 		mx *= canvas.width;
 		my *= canvas.height;
 		drawMap();
-		drawPositions()
+		drawPositions();
 		let point = mapPosToPosID(mx - 60, my - 60);
 		ctx.beginPath();
-		ctx.arc(point.map_x + 60, point.map_y + 60, 20, 0, 2 * Math.PI);
-		ctx.fill();
+		ctx.arc(point.map_x + 60, point.map_y + 60, 30, 0, 2 * Math.PI);
+		ctx.strokeStyle = '#fff';
+		ctx.lineWidth = 16;
+		ctx.stroke();
 		ctx.closePath();
 		setToPoint(point.place);
 		getRoutes(point.place);
@@ -96,7 +99,7 @@ export const Game = (props) => {
 		const canvas = document.getElementById('map');
 		let ctx = canvas.getContext('2d');
 
-		if(players.length > 0) {
+		if (players.length > 0) {
 			players.forEach((player) => {
 				let point = placeToMapPos(player.position);
 				ctx.beginPath();
@@ -139,8 +142,10 @@ export const Game = (props) => {
 				headers: {'Content-type': 'application/json; charset=UTF-8'},
 			});
 			response = await response.json();
-			console.log(response);
 			setPlayers(response.message.players);
+			response.message.players.forEach((player) => {
+				if (player._id === playerId) setUser(player);
+			});
 		};
 		getRoomPLayers();
 	}, []);
@@ -182,7 +187,10 @@ export const Game = (props) => {
 	}, [players]);
 
 	const getRoutes = async (toPoint) => {
-		let data = {toPoint};
+		let data = {
+			playerId,
+			toPoint,
+		};
 		try {
 			let response = await fetch(API_URL + 'game/get_possible_routes', {
 				method: 'POST',
@@ -218,7 +226,7 @@ export const Game = (props) => {
 						<Grid item xs={4}>
 							{possibleRoutes.length ? (
 								<Transport
-									fromPoint={fromPoint}
+									fromPoint={user.position}
 									toPoint={toPoint}
 									possibleRoutes={possibleRoutes}
 									handleRouteSelection={handleRouteSelection}
