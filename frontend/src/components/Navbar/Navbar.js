@@ -25,6 +25,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import logo from '../../assets/scotlandYard/logo.png';
 import {Rules} from '../Rules';
 import {ChangeName} from '../ChangeName';
+import {GameTimeLine} from '../GameTimeLine';
 
 const drawerWidth = 240;
 
@@ -101,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
 		top: '64px',
 		bottom: '0px',
 		left: '73px',
+		right:0
 	},
 	username: {
 		flex: 1,
@@ -114,6 +116,7 @@ export const Navbar = (props) => {
 	const [open, setOpen] = useState(false);
 	const [ruleModal, setRuleModal] = useState(false);
 	const [changeNameModal, setChangeNameModal] = useState(false);
+	const [gameTimeLineModal, setGameTimeLineModal] = useState(false);
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -195,7 +198,7 @@ export const Navbar = (props) => {
 						</ListItemIcon>
 						<ListItemText primary="Chat" />
 					</ListItem>
-					<ListItem button>
+					<ListItem button onClick={() => setGameTimeLineModal(true)}>
 						<ListItemIcon>
 							<TimelineIcon />{' '}
 						</ListItemIcon>
@@ -205,6 +208,7 @@ export const Navbar = (props) => {
 			</Drawer>
 			<div className={classes.children}>{props.children}</div>
 			<Rules open={ruleModal} onClose={() => setRuleModal(false)} />
+			<GameTimeLine open={gameTimeLineModal} onClose={() => setGameTimeLineModal(false)} />
 			<ChangeName
 				open={changeNameModal}
 				setChangeNameModal={setChangeNameModal}
