@@ -18,7 +18,7 @@ const roomSchema = new Schema({
 	},
 	roundNumber: {
 		type: Number,
-		default: 1,
+		default: 0,
 	},
 	owner: {
 		type: ObjectId,

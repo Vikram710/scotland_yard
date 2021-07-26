@@ -29,10 +29,16 @@ exports.getPossibleRoutes = async (req, res) => {
 
 //Socket
 exports.makeMove = async (toPoint, playerId, selectRoute) => {
-	let player = await Player.findOne({_id: playerId});
+	let player = await Player.findOne({_id: playerId}).populate('user').populate('character');
 	let currentPoint = player.position;
 	let room = await Room.findOne({_id: player.roomId});
-	// check if its the players turn 
+	// check if its the players turn
+	if (!room.turn.equals(player._id)) {
+		console.log(`It is not ${player.user.name}'s turn`);
+		return {};
+	}
+	// check player position collision
+	//check if mrX is caught or trapped (room.active = false, room.winner = detectives)
 
 	let newMove = {
 		roomId: room._id,
@@ -54,10 +60,32 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 		})
 		.populate('ticketUsed')
 		.execPopulate();
-	//check if mrX is caught or trapped (room.active = false, room.winner = detectives)
+	//Change player position, tickets
+	player.position = toPoint;
+	await player.save();
+
 	// append move id to room.moves
-	// room.turn  = next player = (search for index in room.user, allplayers[index])
+	// room.moves.push(move._id)
+
+	// room.turn  = next player = (search for index in room.user, allplayers[index].user)
+	let allPlayers = await Player.find({}).populate('user').populate('character');
+	let nextPlayerIndex = 0;
+	room.users.forEach((user, index) => {
+		if (user._id.equals(player.user._id)) {
+			if (index < room.users.length) nextPlayerIndex = index + 1;
+		}
+	});
+	nextPlayer = allPlayers[nextPlayerIndex];
+	room.turn = nextPlayer._id;
+
 	// if character role is mrX then room.roundNumber++
+	// if(player.character.role === 'mrX') room.roundNumber++;
+
 	//if room.roundNumber >=24 (room.active = false, room.winner = mrX)
-	return {move, room};
+	if (room.roundNumber >= 24) {
+		room.active = false;
+		room.winner = 'mrX';
+	}
+	await room.save();
+	return {move, room, allPlayers};
 };

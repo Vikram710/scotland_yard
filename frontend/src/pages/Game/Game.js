@@ -48,8 +48,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-
-let socket;
+const socket = io(API_URL);
 
 export const Game = (props) => {
 	const [panzoom, setPanzoom] = useState(null);
@@ -117,25 +116,6 @@ export const Game = (props) => {
 			});
 		}
 	};
-
-	useEffect(() => {
-		const fetchPositions = async () => {
-			try {
-				if (!localStorage.getItem('positions')) {
-					let response = await fetch(API_URL + 'get_positions', {
-						method: 'GET',
-						headers: {'Content-type': 'application/json; charset=UTF-8'},
-					});
-					response = await response.json();
-					localStorage.setItem('positions', JSON.stringify(response.message));
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		};
-
-		fetchPositions();
-	},[]);
 
 	useEffect(() => {
 		let data = {
@@ -216,14 +196,29 @@ export const Game = (props) => {
 	};
 
 	const makeMove = () => {
-		socket = io(API_URL);
-		socket.emit('move', {toPoint, playerId, selectRoute});
-		// setSelectRoute('')
-		// setPossibleRoutes([])
-		let newUser = {...user}
-		newUser.position = toPoint
-		// setUser(newUser)
-	}
+		socket.emit('move', {toPoint, playerId, selectRoute}, (message) => {
+			if (message === 'Success') {
+				// setSelectRoute('')
+				// setPossibleRoutes([])
+				let newUser = {...user};
+				newUser.position = toPoint;
+				setUser(newUser);
+				let newPlayers = [...players];
+				newPlayers.forEach((player) => {
+					if (player._id === newUser._id) player.position = newUser.position;
+				});
+				setPlayers(newPlayers);
+			} else {
+				console.log(message);
+			}
+		});
+	};
+
+	useEffect(() => {
+		socket.on('receiveMove', (data) => {
+			if (Object.keys(data).length > 0) setPlayers(data.allPlayers);
+		});
+	}, []);
 
 	return (
 		<>

@@ -58,6 +58,26 @@ export const Lobby = () => {
 	const [players, setPlayers] = useState([]);
 
 	useEffect(() => {
+		const fetchPositions = async () => {
+			try {
+				if (!localStorage.getItem('positions')) {
+					let response = await fetch(API_URL + 'pre_game/get_positions', {
+						method: 'GET',
+						headers: {'Content-type': 'application/json; charset=UTF-8'},
+					});
+					response = await response.json();
+					console.log(response);
+					localStorage.setItem('positions', JSON.stringify(response.message));
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		fetchPositions();
+	}, []);
+
+	useEffect(() => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
 		};
