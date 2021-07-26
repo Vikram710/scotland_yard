@@ -45,12 +45,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const playerColorMap = {
-	red: '#DC143C',
-	blue: '#ADD8E6',
-	purple: '#800080',
-	green: '#00FF7F',
-	yellow: 'gold',
-	mrx: 'black',
+	Red: '#DC143C',
+	Blue: '#ADD8E6',
+	Purple: '#800080',
+	Green: '#00FF7F',
+	Yellow: '#FAFAD2',
+	'Mr.X': '#333',
 };
 
 export const Lobby = () => {
@@ -112,7 +112,7 @@ export const Lobby = () => {
 			<Paper className={classes.paper} elevation={5}>
 				<List>
 					{players.map((player, index) => {
-						let character = 'MrX';
+						let character = 'Mr.X';
 						switch (index) {
 							case 1:
 								character = 'RED';
@@ -130,12 +130,12 @@ export const Lobby = () => {
 								character = 'YELLOW';
 								break;
 							default:
-								character = 'MrX';
+								character = 'Mr.X';
 						}
 						return (
 							<ListItem key={player.id}>
 								<ListItemAvatar>
-									<Avatar style={{backgroundColor: playerColorMap[character.toLowerCase()]}}></Avatar>
+									<Avatar style={{backgroundColor: playerColorMap[character]}}></Avatar>
 								</ListItemAvatar>
 								<ListItemText primary={`${player.user.name} (${character})`} />
 							</ListItem>

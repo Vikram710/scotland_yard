@@ -24,7 +24,6 @@ const roomSchema = new Schema({
 		type: ObjectId,
 		ref: 'User',
 	},
-	moves: [{type: ObjectId, ref: 'Move'}],
 	winner: {
 		type: String,
 		default: '', // dectectives or MrX

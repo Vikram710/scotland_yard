@@ -1,24 +1,27 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dialog, DialogContent, DialogTitle, Paper, List, ListItem, Avatar, ListItemAvatar} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
-
+import {
+	Timeline,
+	TimelineItem,
+	TimelineSeparator,
+	TimelineConnector,
+	TimelineDot,
+	TimelineContent,
+} from '@material-ui/lab';
+import {API_URL} from '../../config';
 import taxi from '../../assets/scotlandYard/tickets/taxi.png';
 import bus from '../../assets/scotlandYard/tickets/bus.png';
 import underground from '../../assets/scotlandYard/tickets/underground.png';
 import black from '../../assets/scotlandYard/tickets/black.png';
 
 const playerColorMap = {
-	red: '#DC143C',
-	blue: '#ADD8E6',
-	purple: '#800080',
-	green: '#00FF7F',
-	yellow: '#FAFAD2',
+	Red: '#DC143C',
+	Blue: '#ADD8E6',
+	Purple: '#800080',
+	Green: '#00FF7F',
+	Yellow: '#FAFAD2',
+	'Mr.X': '#333',
 };
 
 const ticketImgMap = {
@@ -65,7 +68,26 @@ export const GameTimeLine = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const {open, onClose} = props;
-	const timeline = Array.from(Array(24).keys());
+	const [timeline, setTimeline] = useState([]);
+
+	useEffect(() => {
+		let data = {roomId: localStorage.getItem('roomId')};
+		const fetchTimeline = async () => {
+			try {
+				let response = await fetch(API_URL + 'game/get_timeline', {
+					method: 'POST',
+					body: JSON.stringify(data),
+					headers: {'Content-type': 'application/json; charset=UTF-8'},
+				});
+				response = await response.json();
+				console.log(response);
+				setTimeline(response.message);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		if (open) fetchTimeline();
+	}, [open]);
 
 	const historyItem = (from, to, mode, user) => {
 		return (
@@ -90,7 +112,7 @@ export const GameTimeLine = (props) => {
 		);
 	};
 
-	const timeLineItem = (index, ele, last) => {
+	const timeLineItem = (index, rn, last) => {
 		return (
 			<TimelineItem>
 				<TimelineSeparator>
@@ -102,8 +124,13 @@ export const GameTimeLine = (props) => {
 				<TimelineContent>
 					<Paper elevation={3} className={classes.paper}>
 						<List>
-							{[1, 2, 3, 4, 5, 6].map((ele) => {
-								return historyItem(82, 65, 'bus', 'blue');
+							{timeline[rn].map((ele) => {
+								return historyItem(
+									ele.fromPosition,
+									ele.toPosition,
+									ele.ticketUsed.name,
+									ele.madeBy.character.name
+								);
 							})}
 						</List>
 					</Paper>
@@ -116,8 +143,8 @@ export const GameTimeLine = (props) => {
 			<DialogTitle className={classes.content}>TimeLine</DialogTitle>
 			<DialogContent className={classes.content}>
 				<Timeline align="alternate">
-					{timeline.map((ele, index) => {
-						return timeLineItem(index, ele, index === timeline.length - 1);
+					{Object.keys(timeline).map((rn, index) => {
+						return timeLineItem(index, rn, index === Object.keys(timeline).length - 1);
 					})}
 				</Timeline>
 			</DialogContent>

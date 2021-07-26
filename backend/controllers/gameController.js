@@ -10,6 +10,13 @@ const Route = Models.Route;
 const Move = Models.Move;
 const Room = Models.Room;
 
+const groupByKey = (array, key) => {
+	return array.reduce((hash, obj) => {
+		if (obj[key] === undefined) return hash;
+		return Object.assign(hash, {[obj[key]]: (hash[obj[key]] || []).concat(obj)});
+	}, {});
+};
+
 exports.getPossibleRoutes = async (req, res) => {
 	try {
 		let p = await Player.findOne({_id: req.body.playerId});
@@ -21,6 +28,26 @@ exports.getPossibleRoutes = async (req, res) => {
 			],
 		}).populate('mode');
 		return res.status(200).json({message: routes});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({message: 'Internal server error'});
+	}
+};
+
+exports.getTimeline = async (req, res) => {
+	try {
+		let moves = await Move.find({roomId: req.body.roomId})
+			.populate({
+				path: 'madeBy',
+				model: 'Player',
+				populate: [
+					{path: 'user', model: 'User'},
+					{path: 'character', model: 'Character'},
+				],
+			})
+			.populate('ticketUsed');
+		let timeline = groupByKey(moves, 'roundNumber');
+		return res.status(200).json({message: timeline});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({message: 'Internal server error'});
@@ -63,9 +90,6 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 	//Change player position, tickets
 	player.position = toPoint;
 	await player.save();
-
-	// append move id to room.moves
-	// room.moves.push(move._id)
 
 	// room.turn  = next player = (search for index in room.user, allplayers[index].user)
 	let allPlayers = await Player.find({}).populate('user').populate('character');
