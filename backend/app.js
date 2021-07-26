@@ -10,6 +10,9 @@ const app = express();
 const port = config.port || 3000;
 const host = (config.ip && config.boolIp) || 'localhost';
 
+// Socket controllers
+const {makeMove} = require('./controllers/gameController');
+
 // Import routes
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
@@ -42,14 +45,14 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 io.on('connection', (socket) => {
-	console.log('new conn');
-
-	socket.on('join', ({name, pwd}) => {
-		console.log(name, pwd);
+	socket.on('move', async ({toPoint, playerId, selectRoute}) => {
+		let data = await makeMove(toPoint, playerId, selectRoute);
+		console.log(data);
+		socket.broadcast.emit('move', data)
 	});
 
 	socket.on('disconnect', () => {
-		console.log('dis conn');
+		console.log('disconnect');
 	});
 });
 

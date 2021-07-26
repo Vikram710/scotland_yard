@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import io from 'socket.io-client';
 import {API_URL} from '../../config';
 import mapBg from '../../assets/scotlandYard/map-min.png';
 import {CreateRoom} from '../../components/CreateRoom';
@@ -7,8 +6,6 @@ import {JoinRoom} from '../../components/JoinRoom';
 
 import {makeStyles} from '@material-ui/core/styles';
 import {AppBar, Tabs, Tab, Paper, Typography, Box} from '@material-ui/core';
-
-let socket;
 
 function TabPanel(props) {
 	const {children, value, index, ...other} = props;
@@ -61,15 +58,6 @@ const useStyles = makeStyles((theme) => ({
 export const Home = ({location}) => {
 	const [value, setValue] = useState(0);
 	const classes = useStyles();
-	useEffect(() => {
-		socket = io(API_URL);
-		socket.emit('join', {name: 'HEY', pwd: 'ASF'});
-
-		return () => {
-			socket.emit('disconnect');
-			socket.off();
-		};
-	}, [location.search]);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);

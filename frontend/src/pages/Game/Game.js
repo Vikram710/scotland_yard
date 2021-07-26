@@ -7,6 +7,7 @@ import {API_URL} from '../../config';
 import {Transport} from '../../components/Transport';
 import {Character} from '../../components/Character';
 import {MrXBoard} from '../../components/MrXBoard';
+import io from 'socket.io-client';
 
 const playerColorMap = {
 	Red: '#DC143C',
@@ -47,6 +48,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+
+let socket;
+
 export const Game = (props) => {
 	const [panzoom, setPanzoom] = useState(null);
 	const [stateImg, setStateImg] = useState({});
@@ -57,7 +61,9 @@ export const Game = (props) => {
 	const [mrXPos, setMrXPos] = useState(Array.from(Array(24).keys()));
 	const [user, setUser] = useState({});
 	const playerId = localStorage.getItem('playerId');
+	const roomId = localStorage.getItem('roomId');
 	const classes = useStyles();
+
 	const showpos = async (e) => {
 		const ele = document.getElementById('map');
 
@@ -129,7 +135,7 @@ export const Game = (props) => {
 		};
 
 		fetchPositions();
-	});
+	},[]);
 
 	useEffect(() => {
 		let data = {
@@ -148,7 +154,7 @@ export const Game = (props) => {
 			});
 		};
 		getRoomPLayers();
-	}, []);
+	}, [playerId]);
 
 	useEffect(() => {
 		const canvas = document.getElementById('map');
@@ -184,7 +190,7 @@ export const Game = (props) => {
 			drawMap();
 			drawPositions();
 		}
-	}, [players]);
+	}, [players]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const getRoutes = async (toPoint) => {
 		let data = {
@@ -209,6 +215,16 @@ export const Game = (props) => {
 		setSelectRoute(event.target.value);
 	};
 
+	const makeMove = () => {
+		socket = io(API_URL);
+		socket.emit('move', {toPoint, playerId, selectRoute});
+		// setSelectRoute('')
+		// setPossibleRoutes([])
+		let newUser = {...user}
+		newUser.position = toPoint
+		// setUser(newUser)
+	}
+
 	return (
 		<>
 			<Grid container className={classes.grid}>
@@ -231,6 +247,7 @@ export const Game = (props) => {
 									possibleRoutes={possibleRoutes}
 									handleRouteSelection={handleRouteSelection}
 									selectRoute={selectRoute}
+									makeMove={makeMove}
 								/>
 							) : null}
 							{players.length

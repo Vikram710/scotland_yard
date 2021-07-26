@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Transport = (props) => {
 	const classes = useStyles();
-	const {fromPoint, toPoint, handleRouteSelection, selectRoute, possibleRoutes} = props;
+	const {fromPoint, toPoint, handleRouteSelection, selectRoute, possibleRoutes, makeMove} = props;
 	return (
 		<Paper className={classes.paper}>
 			<div className={classes.route}>
@@ -81,7 +81,7 @@ export const Transport = (props) => {
 					);
 				})}
 			</Select>
-			<Button variant="contained" className={classes.btn}>
+			<Button variant="contained" className={classes.btn} onClick={makeMove}>
 				Transport
 			</Button>
 		</Paper>
