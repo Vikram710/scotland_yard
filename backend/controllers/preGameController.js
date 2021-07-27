@@ -118,8 +118,8 @@ exports.getRoomDetails = async (req, res) => {
 		let room = await Room.findOne({_id: req.body.roomId}).populate('users').populate('owner');
 		let players = await Player.find({roomId: req.body.roomId}).populate('user').populate('character');
 		const revealTurn = [3, 8, 13, 18, 24];
-		let mrXId = await Player.find({roomId: room._id, user: room.users[0]});
-		let mrXboardDetails = await Move.find({madeBy: mrXId}).populate('ticketUsed');
+		let mrXId = await Player.findOne({roomId: room._id, user: room.users[0]});
+		let mrXboardDetails = await Move.find({madeBy: mrXId._id}).populate('ticketUsed');
 		mrXboardDetails.forEach((ele, index) => {
 			if (revealTurn.indexOf(index + 1) === -1) {
 				ele['fromPosition'] = -1;

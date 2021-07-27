@@ -221,8 +221,8 @@ export const Game = (props) => {
 
 	useEffect(() => {
 		socket.on('receiveMove', (data) => {
-			if (Object.keys(data).length > 0) {
-				console.log(data);
+			console.log(data);
+			if (Object.keys(data).length > 1) {
 				setPlayers(data.allPlayers);
 				setGameDetails(data.room);
 				setMrXboardDetails(data.mrXboardDetails);
