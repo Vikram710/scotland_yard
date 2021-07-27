@@ -61,7 +61,6 @@ export const Game = (props) => {
 	const [gameDetails, setGameDetails] = useState({});
 	const [mrXboardDetails, setMrXboardDetails] = useState([]);
 	const playerId = localStorage.getItem('playerId');
-	const roomId = localStorage.getItem('roomId');
 	const classes = useStyles();
 
 	const showpos = async (e) => {

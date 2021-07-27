@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Grid, Paper, Typography} from '@material-ui/core';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {Grid, Paper} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import taxi from '../../assets/scotlandYard/tickets/taxi.png';
 import bus from '../../assets/scotlandYard/tickets/bus.png';
 import underground from '../../assets/scotlandYard/tickets/underground.png';
@@ -60,7 +60,6 @@ export const MrXBoard = (props) => {
 	const [revealCards, setRevealCards] = useState([false, false, false, false, false]);
 	const classes = useStyles();
 	const {data} = props;
-	const dummy = ['taxi', 'bus', 'underground'];
 	const revealTurn = [3, 8, 13, 18, 24];
 	const revealStyle = {
 		backgroundColor: '#FF8C00',

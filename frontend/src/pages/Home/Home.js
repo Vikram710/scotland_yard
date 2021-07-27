@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import {API_URL} from '../../config';
+import React, {useState} from 'react';
 import mapBg from '../../assets/scotlandYard/map-min.png';
 import {CreateRoom} from '../../components/CreateRoom';
 import {JoinRoom} from '../../components/JoinRoom';
