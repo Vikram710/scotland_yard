@@ -80,7 +80,6 @@ export const GameTimeLine = (props) => {
 					headers: {'Content-type': 'application/json; charset=UTF-8'},
 				});
 				response = await response.json();
-				console.log(response);
 				setTimeline(response.message);
 			} catch (error) {
 				console.log(error);
@@ -125,6 +124,7 @@ export const GameTimeLine = (props) => {
 					<Paper elevation={3} className={classes.paper}>
 						<List>
 							{timeline[rn].map((ele) => {
+								console.log(ele);
 								return historyItem(
 									ele.fromPosition,
 									ele.toPosition,

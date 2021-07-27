@@ -53,7 +53,7 @@ exports.getTimeline = async (req, res) => {
 					{path: 'character', model: 'Character'},
 				],
 			})
-			.populate('ticketVal');
+			.populate('ticketUsed');
 		let timeline = groupByKey(moves, 'roundNumber');
 		return res.status(200).json({message: timeline});
 	} catch (error) {
@@ -99,7 +99,7 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 				{path: 'character', model: 'Character'},
 			],
 		})
-		.populate('ticketVal')
+		.populate('ticketUsed')
 		.execPopulate();
 	//Change player position, tickets
 	let newPlayerTickets = {...player.tickets};
