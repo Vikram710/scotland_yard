@@ -47,13 +47,13 @@ const io = socketio(server);
 io.on('connection', (socket) => {
 	socket.on('move', async ({toPoint, playerId, selectRoute}, callback) => {
 		let data = await makeMove(toPoint, playerId, selectRoute);
-		if (Object.keys(data).length > 0)
+		if (Object.keys(data).length > 0) {
 			console.log(
 				`${data.move.madeBy.user.name} moved from ${data.move.fromPosition} to ${data.move.toPosition} using ${data.move.ticketUsed.name}`
 			);
-		else callback('Fail');
-		callback('Success');
-		socket.broadcast.emit('receiveMove', data);
+			callback('Success', data.room, data.mrXboardDetails);
+			socket.broadcast.emit('receiveMove', data);
+		} else callback('Fail');
 	});
 
 	socket.on('disconnect', () => {

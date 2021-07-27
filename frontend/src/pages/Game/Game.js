@@ -57,8 +57,9 @@ export const Game = (props) => {
 	const [selectRoute, setSelectRoute] = useState('');
 	const [toPoint, setToPoint] = useState(0);
 	const [players, setPlayers] = useState([]);
-	const [mrXPos, setMrXPos] = useState(Array.from(Array(24).keys()));
 	const [user, setUser] = useState({});
+	const [gameDetails, setGameDetails] = useState({});
+	const [mrXboardDetails, setMrXboardDetails] = useState([]);
 	const playerId = localStorage.getItem('playerId');
 	const roomId = localStorage.getItem('roomId');
 	const classes = useStyles();
@@ -129,6 +130,8 @@ export const Game = (props) => {
 			});
 			response = await response.json();
 			setPlayers(response.message.players);
+			setGameDetails(response.message.room);
+			setMrXboardDetails(response.message.mrXboardDetails);
 			response.message.players.forEach((player) => {
 				if (player._id === playerId) setUser(player);
 			});
@@ -196,7 +199,7 @@ export const Game = (props) => {
 	};
 
 	const makeMove = () => {
-		socket.emit('move', {toPoint, playerId, selectRoute}, (message) => {
+		socket.emit('move', {toPoint, playerId, selectRoute}, (message, room, mrXboardDetails) => {
 			if (message === 'Success') {
 				// setSelectRoute('')
 				// setPossibleRoutes([])
@@ -208,6 +211,8 @@ export const Game = (props) => {
 					if (player._id === newUser._id) player.position = newUser.position;
 				});
 				setPlayers(newPlayers);
+				setGameDetails(room);
+				setMrXboardDetails(mrXboardDetails);
 			} else {
 				console.log(message);
 			}
@@ -216,7 +221,12 @@ export const Game = (props) => {
 
 	useEffect(() => {
 		socket.on('receiveMove', (data) => {
-			if (Object.keys(data).length > 0) setPlayers(data.allPlayers);
+			if (Object.keys(data).length > 0) {
+				console.log(data);
+				setPlayers(data.allPlayers);
+				setGameDetails(data.room);
+				setMrXboardDetails(data.mrXboardDetails);
+			}
 		});
 	}, []);
 
@@ -247,12 +257,18 @@ export const Game = (props) => {
 							) : null}
 							{players.length
 								? players.map((player) => {
-										return <Character key={player._id} player={player} />;
+										return (
+											<Character
+												key={player._id}
+												player={player}
+												isTurn={player._id === gameDetails.turn}
+											/>
+										);
 								  })
 								: null}
 						</Grid>
 						<Grid item xs={8}>
-							<MrXBoard data={mrXPos} />
+							<MrXBoard data={mrXboardDetails} />
 						</Grid>
 					</Grid>
 				</Grid>

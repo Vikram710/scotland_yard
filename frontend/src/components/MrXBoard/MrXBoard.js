@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 		color: 'white',
 	},
 	img: {
-		height: '90%',
+		width: '90%',
 		margin: '4px',
 		verticalAlign: 'middle',
 	},
@@ -34,8 +34,10 @@ const useStyles = makeStyles((theme) => ({
 			opacity: 0.9,
 		},
 	},
-	turnDiv: {
-		padding: '25px 0',
+	gridItem: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	turnSpan: {
 		display: 'inline-block',
@@ -49,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
 		padding: '5px',
 	},
 	revealDiv: {
-		padding: '18px 26px',
 		color: 'white',
 		fontSize: '32px',
 	},
@@ -75,26 +76,31 @@ export const MrXBoard = (props) => {
 	return (
 		<div className={classes.root}>
 			<Grid container spacing={1}>
-				{data.map((ele) => {
+				{data.map((ele, index) => {
 					return (
-						<Grid item xs={4} key={ele} onClick={() => handleRevealTurn(ele + 1)}>
+						<Grid item xs={4} key={index} onClick={() => handleRevealTurn(index + 1)}>
 							<Paper className={classes.item}>
-								<div className={classes.turnDiv}>
-									<span
-										className={classes.turnSpan}
-										style={revealTurn.includes(ele + 1) ? revealStyle : {}}>
-										{ele + 1}
-									</span>
-								</div>
-								{revealTurn.indexOf(ele + 1) !== -1 && revealCards[revealTurn.indexOf(ele + 1)] ? (
-									<div className={classes.revealDiv}>{ele * 20}</div>
-								) : (
-									<img
-										alt="logo"
-										src={ticketImgMap[dummy[Math.floor(Math.random() * dummy.length)]]}
-										className={classes.img}
-									/>
-								)}
+								<Grid container>
+									<Grid item xs={4} className={classes.gridItem}>
+										<span
+											className={classes.turnSpan}
+											style={revealTurn.includes(index + 1) ? revealStyle : {}}>
+											{index + 1}
+										</span>
+									</Grid>
+									<Grid item xs={8} className={classes.gridItem}>
+										{revealTurn.indexOf(index + 1) !== -1 &&
+										revealCards[revealTurn.indexOf(index + 1)] ? (
+											<div className={classes.revealDiv}>{ele.toPosition}</div>
+										) : ele.ticketUsed ? (
+											<img
+												alt="logo"
+												src={ticketImgMap[ele.ticketUsed.name]}
+												className={classes.img}
+											/>
+										) : null}
+									</Grid>
+								</Grid>
 							</Paper>
 						</Grid>
 					);

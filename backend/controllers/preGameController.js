@@ -7,6 +7,7 @@ const Player = Models.Player;
 const Character = Models.Character;
 const Position = Models.Position;
 const Room = Models.Room;
+const Move = Models.Move;
 
 const characterTicketRelation = {
 	mrX: {
@@ -21,6 +22,14 @@ const characterTicketRelation = {
 		underground: 4,
 		black: 0,
 	},
+};
+
+const fillXboard = (board) => {
+	fullBoard = new Array(24).fill({});
+	for (let i = 0; i < board.length; i++) {
+		fullBoard[i] = board[i];
+	}
+	return fullBoard;
 };
 
 const allocateTickets = async (player, character) => {
@@ -108,7 +117,17 @@ exports.getRoomDetails = async (req, res) => {
 	try {
 		let room = await Room.findOne({_id: req.body.roomId}).populate('users').populate('owner');
 		let players = await Player.find({roomId: req.body.roomId}).populate('user').populate('character');
-		return res.status(200).json({message: {room, players}});
+		const revealTurn = [3, 8, 13, 18, 24];
+		let mrXId = await Player.find({roomId: room._id, user: room.users[0]});
+		let mrXboardDetails = await Move.find({madeBy: mrXId}).populate('ticketUsed');
+		mrXboardDetails.forEach((ele, index) => {
+			if (revealTurn.indexOf(index + 1) === -1) {
+				ele['fromPosition'] = -1;
+				ele['toPosition'] = -1;
+			}
+		});
+		mrXboardDetails = fillXboard(mrXboardDetails);
+		return res.status(200).json({message: {room, players, mrXboardDetails}});
 	} catch (error) {
 		console.log(error);
 		return res.status(500).json({message: 'Internal server error'});

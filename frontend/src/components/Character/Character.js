@@ -36,6 +36,13 @@ const useStyles = makeStyles((theme) => ({
 	typography: {
 		fontSize: '20px',
 	},
+	active: {
+		display: 'inline-block',
+		width: '15px',
+		height: '15px',
+		backgroundColor: 'green',
+		borderRadius: '50%',
+	},
 }));
 
 const leftPad = (number, targetLength) => {
@@ -49,7 +56,7 @@ const leftPad = (number, targetLength) => {
 export const Character = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
-	const {player} = props;
+	const {player, isTurn} = props;
 	return (
 		<Paper
 			className={classes.paper}
@@ -57,10 +64,10 @@ export const Character = (props) => {
 				backgroundColor: playerColorMap[player.character.name],
 				color: theme.palette.getContrastText(playerColorMap[player.character.name]),
 			}}>
-			<Typography
-				className={
-					classes.typography
-				}>{`${player.user.name} (${player.character.name}) -> ${player.position}`}</Typography>
+			<Typography className={classes.typography}>
+				{`${player.user.name} (${player.character.name}) -> ${player.position} `}
+				{isTurn ? <span className={classes.active}></span> : null}
+			</Typography>
 			<Grid container>
 				{Object.keys(player.tickets).map((ele, idx) => {
 					return (
