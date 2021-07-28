@@ -53,7 +53,7 @@ export const Lobby = () => {
 
 	useEffect(() => {
 		if (!localStorage.getItem('positions')) {
-			dataFetch('pre_game/get_positions', {}, 'GET')
+			dataFetch('pre_game/get_positions')
 				.then(({json, status}) => {
 					if (status === 200) localStorage.setItem('positions', JSON.stringify(json.message));
 					else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
@@ -69,7 +69,7 @@ export const Lobby = () => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
 		};
-		dataFetch('pre_game/get_positions', data)
+		dataFetch('pre_game/get_room_details', data)
 			.then(({json, status}) => {
 				if (status === 200) setPlayers(json.message.players);
 				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
@@ -104,19 +104,19 @@ export const Lobby = () => {
 						let character = 'Mr.X';
 						switch (index) {
 							case 1:
-								character = 'RED';
+								character = 'Red';
 								break;
 							case 2:
-								character = 'BLUE';
+								character = 'Blue';
 								break;
 							case 3:
-								character = 'PURPLE';
+								character = 'Purple';
 								break;
 							case 4:
-								character = 'GREEN';
+								character = 'Green';
 								break;
 							case 5:
-								character = 'YELLOW';
+								character = 'Yellow';
 								break;
 							default:
 								character = 'Mr.X';

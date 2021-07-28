@@ -170,6 +170,6 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 	});
 	mrXboardDetails = fillXboard(mrXboardDetails);
 	// Add checks to remove mrX information from response
-	message = `${move.madeBy.user.name} moved from ${move.fromPosition} to ${move.toPosition} using ${move.ticketUsed.name}`
+	message = `${move.madeBy.user.name} moved from ${move.fromPosition} to ${move.toPosition} using ${move.ticketUsed.name}`;
 	return {move, room, allPlayers, mrXboardDetails, message};
 };

@@ -55,7 +55,7 @@ export const CreateRoom = (props) => {
 	const classes = useStyles();
 
 	useEffect(() => {
-		dataFetch('room/get_room_code', {})
+		dataFetch('room/get_room_code')
 			.then(({json, status}) => {
 				if (status === 200) setRoomCode(json.roomCode);
 				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
