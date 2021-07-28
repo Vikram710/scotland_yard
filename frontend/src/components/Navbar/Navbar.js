@@ -191,20 +191,22 @@ export const Navbar = (props) => {
 					</ListItem>
 				</List>
 				<Divider />
-				<List>
-					<ListItem button>
-						<ListItemIcon>
-							<ChatIcon />
-						</ListItemIcon>
-						<ListItemText primary="Chat" />
-					</ListItem>
-					<ListItem button onClick={() => setGameTimeLineModal(true)}>
-						<ListItemIcon>
-							<TimelineIcon />{' '}
-						</ListItemIcon>
-						<ListItemText primary="History" />
-					</ListItem>
-				</List>
+				{localStorage.getItem('roomId') ? (
+					<List>
+						<ListItem button>
+							<ListItemIcon>
+								<ChatIcon />
+							</ListItemIcon>
+							<ListItemText primary="Chat" />
+						</ListItem>
+						<ListItem button onClick={() => setGameTimeLineModal(true)}>
+							<ListItemIcon>
+								<TimelineIcon />{' '}
+							</ListItemIcon>
+							<ListItemText primary="History" />
+						</ListItem>
+					</List>
+				) : null}
 			</Drawer>
 			<div className={classes.children}>{props.children}</div>
 			<Rules open={ruleModal} onClose={() => setRuleModal(false)} />
