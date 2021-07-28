@@ -59,7 +59,7 @@ export const JoinRoom = (props) => {
 		dataFetch('room/join', data)
 			.then(({json, status}) => {
 				if (status === 200) addToast('Room joined', {appearance: 'success', autoDismiss: true});
-				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+				else addToast('Error in joining room', {appearance: 'error', autoDismiss: true});
 			})
 			.catch((error) => {
 				console.log(error);

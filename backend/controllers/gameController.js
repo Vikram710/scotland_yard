@@ -54,6 +54,13 @@ exports.getTimeline = async (req, res) => {
 				],
 			})
 			.populate('ticketUsed');
+
+		moves.forEach((move) => {
+			if (move.madeBy.character.role === 'mrX') {
+				move.fromPosition = undefined;
+				move.toPosition = undefined;
+			}
+		});
 		let timeline = groupByKey(moves, 'roundNumber');
 		return res.status(200).json({message: timeline});
 	} catch (error) {
@@ -170,6 +177,12 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 	});
 	mrXboardDetails = fillXboard(mrXboardDetails);
 	// Add checks to remove mrX information from response
-	message = `${move.madeBy.user.name} moved from ${move.fromPosition} to ${move.toPosition} using ${move.ticketUsed.name}`;
+	if (mrX._id.equals(playerId)) {
+		allPlayers.forEach((player) => {
+			if (player._id.equals(mrX._id)) player.position = undefined;
+		});
+		message = `${move.madeBy.user.name} used ${move.ticketUsed.name}`;
+	} else
+		message = `${move.madeBy.user.name} moved from ${move.fromPosition} to ${move.toPosition} using ${move.ticketUsed.name}`;
 	return {move, room, allPlayers, mrXboardDetails, message};
 };

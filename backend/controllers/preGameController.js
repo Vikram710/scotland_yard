@@ -118,14 +118,19 @@ exports.getRoomDetails = async (req, res) => {
 		let room = await Room.findOne({_id: req.body.roomId}).populate('users').populate('owner');
 		let players = await Player.find({roomId: req.body.roomId}).populate('user').populate('character');
 		const revealTurn = [3, 8, 13, 18, 24];
-		let mrXId = await Player.findOne({roomId: room._id, user: room.users[0]});
-		let mrXboardDetails = await Move.find({madeBy: mrXId._id}).populate('ticketUsed');
+		let mrX = await Player.findOne({roomId: room._id, user: room.users[0]});
+		let mrXboardDetails = await Move.find({madeBy: mrX._id}).populate('ticketUsed');
 		mrXboardDetails.forEach((ele, index) => {
 			if (revealTurn.indexOf(index + 1) === -1) {
 				ele['fromPosition'] = -1;
 				ele['toPosition'] = -1;
 			}
 		});
+		if (!mrX._id.equals(req.body.playerId)) {
+			players.forEach((player) => {
+				if (player._id.equals(mrX._id)) player.position = undefined;
+			});
+		}
 		mrXboardDetails = fillXboard(mrXboardDetails);
 		return res.status(200).json({message: {room, players, mrXboardDetails}});
 	} catch (error) {

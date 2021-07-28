@@ -72,7 +72,7 @@ export const Lobby = () => {
 		dataFetch('pre_game/get_room_details', data)
 			.then(({json, status}) => {
 				if (status === 200) setPlayers(json.message.players);
-				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+				else addToast('Error in fetching room details', {appearance: 'error', autoDismiss: true});
 			})
 			.catch((error) => {
 				console.log(error);
@@ -88,7 +88,7 @@ export const Lobby = () => {
 		dataFetch('pre_game/order_select', data)
 			.then(({json, status}) => {
 				if (status === 200) addToast('Success', {appearance: 'success', autoDismiss: true});
-				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+				else addToast('Error in starting game', {appearance: 'error', autoDismiss: true});
 			})
 			.catch((error) => {
 				console.log(error);

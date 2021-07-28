@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Models = require('../models/Model');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const Room = Models.Room;
 const Player = Models.Player;
@@ -30,9 +32,11 @@ exports.getRoomCode = async (req, res) => {
 
 exports.createRoom = async (req, res) => {
 	try {
+		console.log(req.body.password, 'HEY');
+		let hashPwd = await bcrypt.hash(req.body.password, saltRounds);
 		let newRoom = {
 			roomCode: req.body.roomCode,
-			password: req.body.password,
+			password: hashPwd,
 			owner: ObjectId(req.body.userId),
 			users: [ObjectId(req.body.userId)],
 			active: true,
@@ -60,11 +64,8 @@ exports.joinRoom = async (req, res) => {
 	let room = await Room.findOne({roomCode: req.body.roomCode});
 	try {
 		if (room) {
-			if (
-				room.users.length < 6 &&
-				!room.users.includes(ObjectId(req.body.userId)) &&
-				room.password === req.body.password
-			) {
+			const match = await bcrypt.compare(req.body.password, room.password);
+			if (room.users.length < 6 && !room.users.includes(ObjectId(req.body.userId)) && match) {
 				room.users = [...room.users, ObjectId(req.body.userId)];
 				await room.save();
 				let newPlayer = {

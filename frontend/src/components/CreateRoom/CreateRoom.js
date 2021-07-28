@@ -58,7 +58,7 @@ export const CreateRoom = (props) => {
 		dataFetch('room/get_room_code')
 			.then(({json, status}) => {
 				if (status === 200) setRoomCode(json.roomCode);
-				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+				else addToast('Error in getting room code', {appearance: 'error', autoDismiss: true});
 			})
 			.catch((error) => {
 				console.log(error);
@@ -75,7 +75,7 @@ export const CreateRoom = (props) => {
 		dataFetch('room/create', data)
 			.then(({json, status}) => {
 				if (status === 200) addToast('Room created', {appearance: 'success', autoDismiss: true});
-				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+				else addToast('Error in creating room', {appearance: 'error', autoDismiss: true});
 			})
 			.catch((error) => {
 				console.log(error);

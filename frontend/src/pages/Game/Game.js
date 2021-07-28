@@ -109,13 +109,15 @@ export const Game = (props) => {
 
 		if (players.length > 0) {
 			players.forEach((player) => {
-				let point = placeToMapPos(player.position);
-				ctx.beginPath();
-				ctx.arc(point.map_x + 60, point.map_y + 60, 30, 0, 2 * Math.PI);
-				ctx.strokeStyle = playerColorMap[player.character.name];
-				ctx.lineWidth = 16;
-				ctx.stroke();
-				ctx.closePath();
+				if (player.position) {
+					let point = placeToMapPos(player.position);
+					ctx.beginPath();
+					ctx.arc(point.map_x + 60, point.map_y + 60, 30, 0, 2 * Math.PI);
+					ctx.strokeStyle = playerColorMap[player.character.name];
+					ctx.lineWidth = 16;
+					ctx.stroke();
+					ctx.closePath();
+				}
 			});
 		}
 	};
@@ -123,6 +125,7 @@ export const Game = (props) => {
 	useEffect(() => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
+			playerId: localStorage.getItem('playerId'),
 		};
 		dataFetch('pre_game/get_room_details', data)
 			.then(({json, status}) => {

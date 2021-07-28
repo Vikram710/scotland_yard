@@ -13,13 +13,13 @@ export const ChangeName = (props) => {
 		};
 		try {
 			if (!localStorage.getItem('user_id')) {
-				dataFetch('room/create', data)
+				dataFetch('user/create', data)
 					.then(({json, status}) => {
 						if (status === 200) {
 							localStorage.setItem('name', json.name);
 							localStorage.setItem('user_id', json.id);
-							addToast('Success', {appearance: 'success'});
-						} else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+							addToast('Success', {appearance: 'success', autoDismiss: true});
+						} else addToast('Error in creating user', {appearance: 'error', autoDismiss: true});
 					})
 					.catch((error) => {
 						console.log(error);
@@ -27,13 +27,13 @@ export const ChangeName = (props) => {
 					});
 			} else {
 				data.id = localStorage.getItem('user_id');
-				dataFetch('room/update', data)
+				dataFetch('user/update', data)
 					.then(({json, status}) => {
 						if (status === 200) {
 							localStorage.setItem('name', json.name);
 							localStorage.setItem('user_id', json.id);
-							addToast('Success', {appearance: 'success'});
-						} else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+							addToast('Success', {appearance: 'success', autoDismiss: true});
+						} else addToast('Error in updating name', {appearance: 'error', autoDismiss: true});
 					})
 					.catch((error) => {
 						console.log(error);

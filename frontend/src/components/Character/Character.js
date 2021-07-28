@@ -48,7 +48,7 @@ export const Character = (props) => {
 				color: theme.palette.getContrastText(playerColorMap[player.character.name]),
 			}}>
 			<Typography className={classes.typography}>
-				{`${player.user.name} (${player.character.name}) -> ${player.position} `}
+				{`${player.user.name} (${player.character.name}) ${player.position ? ' -> ' + player.position : ''} `}
 				{isTurn ? <span className={classes.active}></span> : null}
 			</Typography>
 			<Grid container>
