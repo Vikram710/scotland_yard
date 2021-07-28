@@ -1,17 +1,7 @@
 import React, {useState} from 'react';
 import {Grid, Paper} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import taxi from '../../assets/scotlandYard/tickets/taxi.png';
-import bus from '../../assets/scotlandYard/tickets/bus.png';
-import underground from '../../assets/scotlandYard/tickets/underground.png';
-import black from '../../assets/scotlandYard/tickets/black.png';
-
-const ticketImgMap = {
-	taxi,
-	bus,
-	underground,
-	black,
-};
+import {ticketImgMap} from '../../utils';
 
 const useStyles = makeStyles((theme) => ({
 	root: {

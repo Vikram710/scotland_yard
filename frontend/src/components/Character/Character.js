@@ -1,25 +1,8 @@
 import React from 'react';
 import {Paper, Typography, Grid} from '@material-ui/core';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-import taxi from '../../assets/scotlandYard/tickets/taxi.png';
-import bus from '../../assets/scotlandYard/tickets/bus.png';
-import underground from '../../assets/scotlandYard/tickets/underground.png';
-import black from '../../assets/scotlandYard/tickets/black.png';
+import {playerColorMap, ticketImgMap} from '../../utils';
 
-const playerColorMap = {
-	Red: '#DC143C',
-	Blue: '#ADD8E6',
-	Purple: '#800080',
-	Green: '#00FF7F',
-	Yellow: '#FAFAD2',
-	'Mr.X': '#333',
-};
-const ticketImgMap = {
-	taxi,
-	bus,
-	underground,
-	black,
-};
 const useStyles = makeStyles((theme) => ({
 	paper: {
 		padding: '8px',

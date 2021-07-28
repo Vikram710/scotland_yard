@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Button, TextField, Grid} from '@material-ui/core';
 import {useToasts} from 'react-toast-notifications';
-import {API_URL} from '../../config';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
+import {dataFetch} from '../../utils';
 
 const useStyles = makeStyles(() => ({
 	btn: {
@@ -56,14 +56,15 @@ export const JoinRoom = (props) => {
 			password,
 			userId: localStorage.getItem('user_id'),
 		};
-		let response = await fetch(API_URL + 'room/join', {
-			method: 'post',
-			body: JSON.stringify(data),
-			headers: {'Content-type': 'application/json; charset=UTF-8'},
-		});
-		response = await response.json();
-		console.log(response);
-		addToast('Success', {appearance: 'success', autoDismiss: true});
+		dataFetch('room/join', data)
+			.then(({json, status}) => {
+				if (status === 200) addToast('Room joined', {appearance: 'success', autoDismiss: true});
+				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
+			});
 	};
 	return (
 		<>

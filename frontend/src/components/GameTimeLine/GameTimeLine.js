@@ -9,27 +9,8 @@ import {
 	TimelineDot,
 	TimelineContent,
 } from '@material-ui/lab';
-import {API_URL} from '../../config';
-import taxi from '../../assets/scotlandYard/tickets/taxi.png';
-import bus from '../../assets/scotlandYard/tickets/bus.png';
-import underground from '../../assets/scotlandYard/tickets/underground.png';
-import black from '../../assets/scotlandYard/tickets/black.png';
-
-const playerColorMap = {
-	Red: '#DC143C',
-	Blue: '#ADD8E6',
-	Purple: '#800080',
-	Green: '#00FF7F',
-	Yellow: '#FAFAD2',
-	'Mr.X': '#333',
-};
-
-const ticketImgMap = {
-	taxi,
-	bus,
-	underground,
-	black,
-};
+import {playerColorMap, ticketImgMap, dataFetch} from '../../utils';
+import {useToasts} from 'react-toast-notifications';
 
 const useStyles = makeStyles((theme) => ({
 	content: {
@@ -62,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
 		justifyContent: 'space-evenly',
 		width: '100%',
 	},
+	playerAvatar: {
+		minWidth: '30px',
+	},
 }));
 
 export const GameTimeLine = (props) => {
@@ -69,32 +53,27 @@ export const GameTimeLine = (props) => {
 	const theme = useTheme();
 	const {open, onClose} = props;
 	const [timeline, setTimeline] = useState([]);
+	const {addToast} = useToasts();
 
 	useEffect(() => {
 		let data = {roomId: localStorage.getItem('roomId')};
-		const fetchTimeline = async () => {
-			try {
-				let response = await fetch(API_URL + 'game/get_timeline', {
-					method: 'POST',
-					body: JSON.stringify(data),
-					headers: {'Content-type': 'application/json; charset=UTF-8'},
+		if (open) {
+			dataFetch('game/get_timeline', data)
+				.then(({json, status}) => {
+					if (status === 200) setTimeline(json.message);
+					else addToast('Error in fetching timeline', {appearance: 'error', autoDismiss: true});
+				})
+				.catch((error) => {
+					console.log(error);
+					addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
 				});
-				response = await response.json();
-				setTimeline(response.message);
-			} catch (error) {
-				console.log(error);
-			}
-		};
-		if (open) fetchTimeline();
-	}, [open]);
+		}
+	}, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const historyItem = (from, to, mode, user) => {
 		return (
 			<ListItem className={classes.hiListItem}>
-				<ListItemAvatar
-					style={{
-						minWidth: '30px',
-					}}>
+				<ListItemAvatar className={classes.playerAvatar}>
 					<Avatar
 						className={classes.hiAvatar}
 						style={{
@@ -124,7 +103,6 @@ export const GameTimeLine = (props) => {
 					<Paper elevation={3} className={classes.paper}>
 						<List>
 							{timeline[rn].map((ele) => {
-								console.log(ele);
 								return historyItem(
 									ele.fromPosition,
 									ele.toPosition,

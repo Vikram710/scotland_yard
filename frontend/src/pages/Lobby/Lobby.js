@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Button} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {API_URL} from '../../config';
 import mapBg from '../../assets/scotlandYard/map-min.png';
+import {useToasts} from 'react-toast-notifications';
+import {playerColorMap, dataFetch} from '../../utils';
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		height: '100%',
@@ -44,67 +46,54 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const playerColorMap = {
-	Red: '#DC143C',
-	Blue: '#ADD8E6',
-	Purple: '#800080',
-	Green: '#00FF7F',
-	Yellow: '#FAFAD2',
-	'Mr.X': '#333',
-};
-
 export const Lobby = () => {
 	const classes = useStyles();
 	const [players, setPlayers] = useState([]);
+	const {addToast} = useToasts();
 
 	useEffect(() => {
-		const fetchPositions = async () => {
-			try {
-				if (!localStorage.getItem('positions')) {
-					let response = await fetch(API_URL + 'pre_game/get_positions', {
-						method: 'GET',
-						headers: {'Content-type': 'application/json; charset=UTF-8'},
-					});
-					response = await response.json();
-					console.log(response);
-					localStorage.setItem('positions', JSON.stringify(response.message));
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		};
-
-		fetchPositions();
-	}, []);
+		if (!localStorage.getItem('positions')) {
+			dataFetch('pre_game/get_positions', {}, 'GET')
+				.then(({json, status}) => {
+					if (status === 200) localStorage.setItem('positions', JSON.stringify(json.message));
+					else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+				})
+				.catch((error) => {
+					console.log(error);
+					addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
+				});
+		}
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
 		};
-		const getRoomPLayers = async () => {
-			let response = await fetch(API_URL + 'pre_game/get_room_details', {
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {'Content-type': 'application/json; charset=UTF-8'},
+		dataFetch('pre_game/get_positions', data)
+			.then(({json, status}) => {
+				if (status === 200) setPlayers(json.message.players);
+				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
 			});
-			response = await response.json();
-			setPlayers(response.message.players);
-		};
-		getRoomPLayers();
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const startGame = async () => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
 			orderedPlayers: players,
 		};
-		let response = await fetch(API_URL + 'pre_game/order_select', {
-			method: 'POST',
-			body: JSON.stringify(data),
-			headers: {'Content-type': 'application/json; charset=UTF-8'},
-		});
-		response = await response.json();
-		console.log(response);
+		dataFetch('pre_game/order_select', data)
+			.then(({json, status}) => {
+				if (status === 200) addToast('Success', {appearance: 'success', autoDismiss: true});
+				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
+			});
 	};
 
 	return (

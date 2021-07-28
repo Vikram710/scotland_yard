@@ -90,6 +90,11 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 		return {message};
 	}
 	// check player position collision
+	if (player.position === toPoint) {
+		message = `${toPoint} occupied by ${allPlayers[i].user.name}`;
+		console.log(message);
+		return {message};
+	}
 	for (let i = 0; i < allPlayers.length; i++) {
 		if (allPlayers[i].position === toPoint && allPlayers[i].character.role !== 'mrX') {
 			message = `${toPoint} occupied by ${allPlayers[i].user.name}`;
@@ -157,12 +162,14 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 	//send updated mrX board details
 	const revealTurn = [3, 8, 13, 18, 24];
 	let mrXboardDetails = await Move.find({madeBy: mrX._id}).populate('ticketUsed');
-	mrXboardDetails.forEach((ele) => {
-		if (revealTurn.indexOf(ele + 1) === -1) {
+	mrXboardDetails.forEach((ele, index) => {
+		if (revealTurn.indexOf(index + 1) === -1) {
 			ele['fromPosition'] = -1;
 			ele['toPosition'] = -1;
 		}
 	});
 	mrXboardDetails = fillXboard(mrXboardDetails);
+	// Add checks to remove mrX information from response
+	message = `${move.madeBy.user.name} moved from ${move.fromPosition} to ${move.toPosition} using ${move.ticketUsed.name}`
 	return {move, room, allPlayers, mrXboardDetails, message};
 };

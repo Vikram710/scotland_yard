@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Button, TextField, Grid} from '@material-ui/core';
 import {useToasts} from 'react-toast-notifications';
-import {API_URL} from '../../config';
 import {makeStyles, withStyles} from '@material-ui/core/styles';
+import {dataFetch} from '../../utils';
 
 const useStyles = makeStyles(() => ({
 	btn: {
@@ -55,13 +55,16 @@ export const CreateRoom = (props) => {
 	const classes = useStyles();
 
 	useEffect(() => {
-		const getRoomCode = async () => {
-			let response = await fetch(API_URL + 'room/get_room_code');
-			response = await response.json();
-			setRoomCode(response.roomCode);
-		};
-		getRoomCode();
-	}, []);
+		dataFetch('room/get_room_code', {})
+			.then(({json, status}) => {
+				if (status === 200) setRoomCode(json.roomCode);
+				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
+			});
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const createRoom = async () => {
 		let data = {
@@ -69,14 +72,15 @@ export const CreateRoom = (props) => {
 			password,
 			userId: localStorage.getItem('user_id'),
 		};
-		let response = await fetch(API_URL + 'room/create', {
-			method: 'post',
-			body: JSON.stringify(data),
-			headers: {'Content-type': 'application/json; charset=UTF-8'},
-		});
-		response = await response.json();
-		console.log(response);
-		addToast('Success', {appearance: 'success', autoDismiss: true});
+		dataFetch('room/create', data)
+			.then(({json, status}) => {
+				if (status === 200) addToast('Room created', {appearance: 'success', autoDismiss: true});
+				else addToast('Error in fetching positions', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
+			});
 		console.log(roomCode, password);
 	};
 	return (

@@ -7,16 +7,9 @@ import {API_URL} from '../../config';
 import {Transport} from '../../components/Transport';
 import {Character} from '../../components/Character';
 import {MrXBoard} from '../../components/MrXBoard';
+import {useToasts} from 'react-toast-notifications';
 import io from 'socket.io-client';
-
-const playerColorMap = {
-	Red: '#DC143C',
-	Blue: '#ADD8E6',
-	Purple: '#800080',
-	Green: '#00FF7F',
-	Yellow: 'gold',
-	'Mr.X': '#333',
-};
+import {playerColorMap, dataFetch} from '../../utils';
 
 const mapPosToPosID = (x, y) => {
 	let postitions = JSON.parse(localStorage.getItem('positions'));
@@ -46,6 +39,15 @@ const useStyles = makeStyles((theme) => ({
 	grid: {
 		marginTop: '20px',
 	},
+	canvasHolder: {
+		width: '99%',
+		height: '100%',
+		margin: 'auto',
+	},
+	canvas: {
+		width: '100%',
+		height: '100%',
+	},
 }));
 
 const socket = io(API_URL);
@@ -62,6 +64,7 @@ export const Game = (props) => {
 	const [mrXboardDetails, setMrXboardDetails] = useState([]);
 	const playerId = localStorage.getItem('playerId');
 	const classes = useStyles();
+	const {addToast} = useToasts();
 
 	const showpos = async (e) => {
 		const ele = document.getElementById('map');
@@ -121,22 +124,22 @@ export const Game = (props) => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
 		};
-		const getRoomPLayers = async () => {
-			let response = await fetch(API_URL + 'pre_game/get_room_details', {
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {'Content-type': 'application/json; charset=UTF-8'},
+		dataFetch('pre_game/get_room_details', data)
+			.then(({json, status}) => {
+				if (status === 200) {
+					setPlayers(json.message.players);
+					setGameDetails(json.message.room);
+					setMrXboardDetails(json.message.mrXboardDetails);
+					json.message.players.forEach((player) => {
+						if (player._id === playerId) setUser(player);
+					});
+				} else addToast('Error in fetch game details', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
 			});
-			response = await response.json();
-			setPlayers(response.message.players);
-			setGameDetails(response.message.room);
-			setMrXboardDetails(response.message.mrXboardDetails);
-			response.message.players.forEach((player) => {
-				if (player._id === playerId) setUser(player);
-			});
-		};
-		getRoomPLayers();
-	}, [playerId]);
+	}, [playerId]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		const canvas = document.getElementById('map');
@@ -179,18 +182,17 @@ export const Game = (props) => {
 			playerId,
 			toPoint,
 		};
-		try {
-			let response = await fetch(API_URL + 'game/get_possible_routes', {
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {'Content-type': 'application/json; charset=UTF-8'},
+		dataFetch('game/get_possible_routes', data)
+			.then(({json, status}) => {
+				if (status === 200) {
+					setPossibleRoutes(json.message);
+					setSelectRoute('');
+				} else addToast('Error in fetch game details', {appearance: 'error', autoDismiss: true});
+			})
+			.catch((error) => {
+				console.log(error);
+				addToast('Internal Server Error', {appearance: 'error', autoDismiss: true});
 			});
-			response = await response.json();
-			setPossibleRoutes(response.message);
-			// setSelectRoute('')
-		} catch (error) {
-			console.log(error);
-		}
 	};
 
 	const handleRouteSelection = (event) => {
@@ -200,8 +202,8 @@ export const Game = (props) => {
 	const makeMove = () => {
 		socket.emit('move', {toPoint, playerId, selectRoute}, (message, room, mrXboardDetails) => {
 			if (message === 'Success') {
-				// setSelectRoute('')
-				// setPossibleRoutes([])
+				setSelectRoute('');
+				setPossibleRoutes([]);
 				let newUser = {...user};
 				newUser.position = toPoint;
 				setUser(newUser);
@@ -212,8 +214,9 @@ export const Game = (props) => {
 				setPlayers(newPlayers);
 				setGameDetails(room);
 				setMrXboardDetails(mrXboardDetails);
+				addToast(message, {appearance: 'info', autoDismiss: true});
 			} else {
-				console.log(message);
+				addToast(message, {appearance: 'error', autoDismiss: true});
 			}
 		});
 	};
@@ -225,20 +228,17 @@ export const Game = (props) => {
 				setPlayers(data.allPlayers);
 				setGameDetails(data.room);
 				setMrXboardDetails(data.mrXboardDetails);
-			}
+				addToast(data.message, {appearance: 'info', autoDismiss: true});
+			} else addToast(data.message, {appearance: 'error', autoDismiss: true});
 		});
-	}, []);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<>
 			<Grid container className={classes.grid}>
 				<Grid item xs={7}>
-					<div style={{width: '99%', height: '100%', margin: 'auto'}}>
-						<canvas
-							draggable="true"
-							style={{width: '100%', height: '100%'}}
-							onDoubleClick={showpos}
-							id="map"></canvas>
+					<div className={classes.canvasHolder}>
+						<canvas draggable="true" className={classes.canvas} onDoubleClick={showpos} id="map"></canvas>
 					</div>
 				</Grid>
 				<Grid item xs={5}>
