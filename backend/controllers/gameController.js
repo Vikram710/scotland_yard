@@ -73,9 +73,9 @@ exports.getTimeline = async (req, res) => {
 exports.makeMove = async (toPoint, playerId, selectRoute) => {
 	let player = await Player.findOne({_id: playerId}).populate('user').populate('character');
 	let ticketVal = await Ticket.findOne({_id: selectRoute});
-	let allPlayers = await Player.find({}).populate('user').populate('character');
 	let currentPoint = player.position;
 	let room = await Room.findOne({_id: player.roomId});
+	let allPlayers = await Player.find({roomId: room._id}).populate('user').populate('character');
 	let mrX = await Player.findOne({roomId: room._id, user: room.users[0]});
 	let message = 'Success';
 	//check if room is active
@@ -140,7 +140,7 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 	await player.save();
 
 	// room.turn  = next player = (search for index in room.user, allplayers[index].user)
-	allPlayers = await Player.find({}).populate('user').populate('character');
+	allPlayers = await Player.find({roomId: room._id}).populate('user').populate('character');
 	let nextPlayerIndex = 0;
 	room.users.forEach((user, index) => {
 		if (user._id.equals(player.user._id)) {
@@ -160,9 +160,8 @@ exports.makeMove = async (toPoint, playerId, selectRoute) => {
 		if (toPoint === mrX.position) {
 			message = `MrX caught by ${player.user.name} at ${toPoint}`;
 			console.log(message);
-			// room.active = false;
-			// room.winner = 'detectives';
-			// await room.save();
+			room.active = false;
+			room.winner = 'detectives';
 		}
 	}
 	await room.save();

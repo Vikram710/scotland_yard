@@ -45,6 +45,11 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 io.on('connection', (socket) => {
+	socket.on('joinRoom', ({roomId, playerId}) => {
+		console.log(`${playerId} joined ${roomId}`);
+		socket.join(roomId);
+	});
+
 	socket.on('move', async ({toPoint, playerId, selectRoute}, callback) => {
 		let data = await makeMove(toPoint, playerId, selectRoute);
 		if (Object.keys(data).length > 1) {
@@ -52,7 +57,7 @@ io.on('connection', (socket) => {
 				`${data.move.madeBy.user.name} moved from ${data.move.fromPosition} to ${data.move.toPosition} using ${data.move.ticketUsed.name}`
 			);
 			callback('Success', data.room, data.mrXboardDetails);
-			socket.broadcast.emit('receiveMove', data);
+			socket.to(data.room._id).broadcast.emit('receiveMove', data);
 		} else callback(data.message);
 	});
 

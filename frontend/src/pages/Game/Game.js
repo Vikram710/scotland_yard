@@ -10,6 +10,7 @@ import {MrXBoard} from '../../components/MrXBoard';
 import {useToasts} from 'react-toast-notifications';
 import io from 'socket.io-client';
 import {playerColorMap, dataFetch} from '../../utils';
+import {GameOver} from '../../components/GameOver';
 
 const mapPosToPosID = (x, y) => {
 	let postitions = JSON.parse(localStorage.getItem('positions'));
@@ -62,6 +63,8 @@ export const Game = (props) => {
 	const [user, setUser] = useState({});
 	const [gameDetails, setGameDetails] = useState({});
 	const [mrXboardDetails, setMrXboardDetails] = useState([]);
+	const [gameOver, setGameOver] = useState(false);
+	const [winner, setWinner] = useState('');
 	const playerId = localStorage.getItem('playerId');
 	const classes = useStyles();
 	const {addToast} = useToasts();
@@ -122,6 +125,13 @@ export const Game = (props) => {
 		}
 	};
 
+	const exitGame = () => {
+		console.log('exit');
+		localStorage.removeItem('roomId');
+		localStorage.removeItem('playerId');
+		window.location.replace('/');
+	};
+
 	useEffect(() => {
 		let data = {
 			roomId: localStorage.getItem('roomId'),
@@ -130,6 +140,7 @@ export const Game = (props) => {
 		dataFetch('pre_game/get_room_details', data)
 			.then(({json, status}) => {
 				if (status === 200) {
+					if (!json.message.room.active) exitGame();
 					setPlayers(json.message.players);
 					setGameDetails(json.message.room);
 					setMrXboardDetails(json.message.mrXboardDetails);
@@ -205,6 +216,10 @@ export const Game = (props) => {
 	const makeMove = () => {
 		socket.emit('move', {toPoint, playerId, selectRoute}, (message, room, mrXboardDetails) => {
 			if (message === 'Success') {
+				if (!room.active) {
+					setWinner(room.winner);
+					setGameOver(true);
+				}
 				setSelectRoute('');
 				setPossibleRoutes([]);
 				let newUser = {...user};
@@ -228,6 +243,10 @@ export const Game = (props) => {
 		socket.on('receiveMove', (data) => {
 			console.log(data);
 			if (Object.keys(data).length > 1) {
+				if (!data.room.active) {
+					setWinner(data.room.winner);
+					setGameOver(true);
+				}
 				setPlayers(data.allPlayers);
 				setGameDetails(data.room);
 				setMrXboardDetails(data.mrXboardDetails);
@@ -235,6 +254,14 @@ export const Game = (props) => {
 			} else addToast(data.message, {appearance: 'error', autoDismiss: true});
 		});
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		let data = {
+			roomId: localStorage.getItem('roomId'),
+			playerId: localStorage.getItem('playerId'),
+		};
+		socket.emit('joinRoom', data);
+	}, []);
 
 	return (
 		<>
@@ -275,6 +302,7 @@ export const Game = (props) => {
 					</Grid>
 				</Grid>
 			</Grid>
+			<GameOver open={gameOver} exitGame={exitGame} winner={winner} />
 		</>
 	);
 };
