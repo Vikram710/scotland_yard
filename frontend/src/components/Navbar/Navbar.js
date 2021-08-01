@@ -26,6 +26,7 @@ import logo from '../../assets/scotlandYard/logo.png';
 import {Rules} from '../Rules';
 import {ChangeName} from '../ChangeName';
 import {GameTimeLine} from '../GameTimeLine';
+import {ChatSidebar} from '../Chat';
 
 const drawerWidth = 240;
 
@@ -117,6 +118,8 @@ export const Navbar = (props) => {
 	const [ruleModal, setRuleModal] = useState(false);
 	const [changeNameModal, setChangeNameModal] = useState(false);
 	const [gameTimeLineModal, setGameTimeLineModal] = useState(false);
+	const [openChatSidebar, setOpenChatSidebar] = useState(false);
+	const [chatData, setChatData] = useState(Array.from(Array(30).keys()))
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -164,7 +167,7 @@ export const Navbar = (props) => {
 					}),
 				}}>
 				<div className={classes.toolbar}>
-					<div className={classes.username}>UserName</div>
+					<div className={classes.username}>{localStorage.getItem('name')}</div>
 					<IconButton onClick={handleDrawerClose}>
 						{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
 					</IconButton>
@@ -191,9 +194,9 @@ export const Navbar = (props) => {
 					</ListItem>
 				</List>
 				<Divider />
-				{localStorage.getItem('roomId') ? (
+				{localStorage.getItem('roomId') || true ? (
 					<List>
-						<ListItem button>
+						<ListItem button onClick={() => setOpenChatSidebar(true)}>
 							<ListItemIcon>
 								<ChatIcon />
 							</ListItemIcon>
@@ -216,6 +219,7 @@ export const Navbar = (props) => {
 				setChangeNameModal={setChangeNameModal}
 				onClose={() => setChangeNameModal(false)}
 			/>
+			<ChatSidebar open={openChatSidebar} onClose={setOpenChatSidebar} data={chatData} setData={setChatData}/>
 		</div>
 	);
 };
